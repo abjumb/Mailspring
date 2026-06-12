@@ -295,3 +295,220 @@
     color: @text-color-very-subtle;
   }
 }
+
+// ---------------------------------------------------------------- Panels
+
+.moros-panel-grid {
+  padding: @spacing-standard @spacing-double @spacing-double;
+
+  .moros-panel-grid-cells {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: @spacing-standard;
+    align-items: start;
+  }
+}
+
+.moros-panel {
+  border: 1px solid @border-color-divider;
+  border-radius: @border-radius-large;
+  background: @background-off-primary;
+  overflow: hidden;
+  min-width: 0;
+
+  &.moros-panel-span-1 {
+    grid-column: span 1;
+  }
+  &.moros-panel-span-2 {
+    grid-column: span 2;
+  }
+
+  &.is-dragging {
+    opacity: 0.4;
+  }
+  &.is-drop-target {
+    outline: 2px solid @accent-primary;
+    outline-offset: -2px;
+  }
+
+  .moros-row,
+  .moros-group-header,
+  .moros-toolbar-row {
+    padding-left: @spacing-standard;
+    padding-right: @spacing-standard;
+  }
+
+  .moros-panel-form {
+    border-bottom: none;
+  }
+}
+
+.moros-panel-header {
+  display: flex;
+  align-items: center;
+  gap: @spacing-half;
+  padding: 6px @spacing-standard;
+  background: @background-secondary;
+  border-bottom: 1px solid @border-color-divider;
+  cursor: grab;
+  user-select: none;
+
+  .moros-panel-grip {
+    color: @text-color-very-subtle;
+    font-size: @font-size-smaller;
+  }
+
+  .moros-panel-title {
+    flex: 1;
+    font-size: @font-size-small;
+    font-weight: @font-weight-semi-bold;
+    color: @text-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .moros-panel-actions {
+    display: flex;
+    gap: 2px;
+
+    button {
+      border: none;
+      background: none;
+      color: @text-color-very-subtle;
+      font-size: @font-size-small;
+      line-height: 1;
+      padding: 2px 5px;
+      border-radius: @border-radius-base;
+      cursor: pointer;
+
+      &:hover,
+      &.is-active {
+        color: @text-color;
+        background: rgba(128, 128, 128, 0.15);
+      }
+    }
+  }
+}
+
+.moros-panel-body {
+  min-width: 0;
+}
+
+.moros-panel-fill {
+  padding-bottom: @spacing-half;
+}
+
+.moros-cards-panel {
+  padding: @spacing-standard;
+}
+
+.moros-customize-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: @spacing-half;
+  padding-top: @spacing-standard;
+
+  .moros-chip-action {
+    cursor: pointer;
+
+    &:hover {
+      color: @text-color;
+      border-color: @text-color-very-subtle;
+    }
+  }
+}
+
+// ------------------------------------------------------------- Net worth
+
+.moros-networth {
+  padding: @spacing-standard;
+
+  .moros-networth-headline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: @spacing-standard;
+  }
+
+  .moros-networth-value {
+    font-size: @font-size-base * 2;
+    font-weight: @font-weight-semi-bold;
+    font-variant-numeric: tabular-nums;
+    color: @text-color-heading;
+  }
+
+  .moros-networth-delta {
+    margin-top: 2px;
+    font-size: @font-size-small;
+    font-variant-numeric: tabular-nums;
+
+    &.is-income {
+      color: @color-success;
+    }
+    &.is-expense {
+      color: @color-error;
+    }
+  }
+
+  .moros-networth-chart {
+    display: block;
+    width: 100%;
+    height: 140px;
+    margin-top: @spacing-standard;
+
+    .moros-chart-line {
+      stroke: @accent-primary;
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .moros-chart-area {
+      fill: color-mix(in srgb, #5e6ad2 18%, transparent);
+    }
+  }
+}
+
+.moros-range-pills {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: @background-secondary;
+  border: 1px solid @border-color-divider;
+  border-radius: @border-radius-large;
+  align-self: flex-start;
+
+  .moros-range-pill {
+    border: none;
+    background: none;
+    color: @text-color-subtle;
+    font-size: @font-size-smaller;
+    padding: 3px 8px;
+    border-radius: @border-radius-base;
+    cursor: pointer;
+
+    &.is-active {
+      background: @background-primary;
+      color: @text-color;
+    }
+  }
+}
+
+// --------------------------------------------------------------- Widgets
+
+.moros-widget-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: @background-primary;
+  color: @text-color;
+
+  .moros-panel-header {
+    cursor: default;
+  }
+
+  .moros-panel-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+}

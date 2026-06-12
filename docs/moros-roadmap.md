@@ -43,12 +43,32 @@ The guiding constraints:
       (`c` to create, `1-4` to set priority — Linear bindings), task → thread link-back.
 - [x] Finance: month navigation (summary cards + transaction list scoped to the
       viewed month, with full-history toggle).
-- [ ] Finance: budgets per category, CSV import, simple charts (reuse the activity
-      dashboard's chart primitives), configurable currency.
+- [x] Finance: Origin-style overview ([useorigin.com](https://useorigin.com) as the
+      design reference — the app dashboard itself is behind a login/bot wall, so the
+      layout follows Origin's published overview structure): net worth headline with
+      delta badge, 1W/1M/3M/1Y/All range pills, and a daily running-balance area chart.
+- [ ] Finance: budgets per category, CSV import, chart hover scrubber, configurable
+      currency.
 - [x] Vault: search, auto-clearing clipboard (30 s — only when the clipboard still
       holds the copied secret).
 - [ ] Vault: TOTP support, secret strength meter, import from CSV/1Password/Bitwarden
       formats.
+
+### Phase 2.5 — Tiling panels & desktop widgets
+
+- [x] Panel system: every Moros module view is composed of tileable panels
+      (`PanelGrid` + `PanelLayoutStore`): drag a panel header to rearrange,
+      toggle half/full width, hide panels and restore them from the customize
+      bar. Arrangements persist per module in `<config>/moros/layout.json`.
+- [x] Pop-out desktop widgets: any panel can be popped out into its own small
+      always-on-top window (`moros-widget` window type, pin toggle), using
+      Mailspring's hot-window infrastructure. Data live-syncs across windows
+      via file watchers on the shared JSON stores.
+- [ ] Mail panels: thread list / message list tiling beyond Mailspring's
+      existing layout modes and resizable columns.
+- [ ] Windows 11 Widgets board integration. Not possible from a plain Electron
+      window — requires MSIX packaging plus a COM `IWidgetProvider`; tracked for
+      the Phase 5 installer work. Desktop floating widgets cover the gap.
 
 ### Phase 3 — Linear shell
 
@@ -58,6 +78,16 @@ The guiding constraints:
       primary interaction model. Mailspring's keymap + menu infrastructure already
       provides most of the plumbing.
 - [ ] Linear-style light theme variant (`ui-linear-light`).
+
+### Plugins & custom themes (already supported upstream)
+
+Mailspring ships with both: third-party plugins and themes load from
+`<config>/packages`, `View → Install Theme or Plugin…` installs a package
+folder via `PackageManager.installPackageFromPath`, the theme picker lists
+custom themes (including `ui-linear`), and "Create a Theme" links the plugin
+starter. Moros keeps this intact — `ui-linear` and `moros` are ordinary
+packages, so the same APIs third-party authors use are exercised by the
+product itself.
 
 ### Phase 4 — Rebrand
 

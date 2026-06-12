@@ -59,6 +59,15 @@ const sidebarExtensions = MODULES.map((module) => ({
 }));
 
 export function activate() {
+  if (AppEnv.getWindowType() === 'moros-widget') {
+    // Widget windows render a single panel, onboarding-style: one root
+    // sheet with a Center column.
+    const WidgetRoot = require('./widget-root').default;
+    WorkspaceStore.defineSheet('Main', { root: true }, { list: ['Center'] });
+    ComponentRegistry.register(WidgetRoot, { location: WorkspaceStore.Location.Center });
+    return;
+  }
+
   for (const module of MODULES) {
     WorkspaceStore.defineSheet(
       module.sheetName,
@@ -87,6 +96,10 @@ export function activate() {
 }
 
 export function deactivate() {
+  if (AppEnv.getWindowType() === 'moros-widget') {
+    ComponentRegistry.unregister(require('./widget-root').default);
+    return;
+  }
   ComponentRegistry.unregister(CreateTaskButton);
   for (const module of MODULES) {
     ComponentRegistry.unregister(module.component);

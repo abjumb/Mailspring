@@ -9,6 +9,10 @@
   "engines": {
     "mailspring": "*"
   },
+  "windowTypes": {
+    "default": true,
+    "moros-widget": true
+  },
 
   "title": "Moros Productivity",
   "description": "Tasks, personal finance, and an encrypted API key & password vault alongside your mail.",

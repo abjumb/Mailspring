@@ -92,6 +92,45 @@ class FinanceStore extends MorosDataStore<MorosTransaction> {
       : [...this.items()];
     return filtered.sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
   }
+
+  /**
+   * Daily running-balance series ending today, for the net worth chart.
+   * `daysBack = null` spans from the earliest transaction. Days without
+   * transactions carry the previous balance forward, Origin-style.
+   */
+  balanceSeries(daysBack: number | null): { date: string; cents: number }[] {
+    const byDate = new Map<string, number>();
+    for (const t of this.items()) {
+      byDate.set(t.date, (byDate.get(t.date) || 0) + this.signedCents(t));
+    }
+    const allDates = [...byDate.keys()].sort();
+    const today = todayISO();
+    let startDate: string;
+    if (daysBack !== null) {
+      const start = new Date();
+      start.setDate(start.getDate() - (daysBack - 1));
+      startDate = `${start.getFullYear()}-${`${start.getMonth() + 1}`.padStart(2, '0')}-${`${start.getDate()}`.padStart(2, '0')}`;
+    } else {
+      startDate = allDates[0] || today;
+    }
+
+    // Balance accumulated before the window opens.
+    let runningCents = 0;
+    for (const date of allDates) {
+      if (date < startDate) runningCents += byDate.get(date);
+    }
+
+    const series: { date: string; cents: number }[] = [];
+    const cursor = new Date(`${startDate}T00:00:00`);
+    let iso = startDate;
+    while (iso <= today) {
+      runningCents += byDate.get(iso) || 0;
+      series.push({ date: iso, cents: runningCents });
+      cursor.setDate(cursor.getDate() + 1);
+      iso = `${cursor.getFullYear()}-${`${cursor.getMonth() + 1}`.padStart(2, '0')}-${`${cursor.getDate()}`.padStart(2, '0')}`;
+    }
+    return series;
+  }
 }
 
 export default new FinanceStore();
