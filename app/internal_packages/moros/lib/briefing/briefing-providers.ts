@@ -125,6 +125,9 @@ export class AnthropicByokProvider implements BriefingProvider {
     if (!resp.ok) {
       throw new Error(anthropicErrorMessage(resp.status, json));
     }
+    if (!json) {
+      throw new Error(localized('The Anthropic API returned an unreadable response — try again.'));
+    }
     if (json.stop_reason === 'refusal') {
       throw new Error(localized('The model declined to summarize this content.'));
     }

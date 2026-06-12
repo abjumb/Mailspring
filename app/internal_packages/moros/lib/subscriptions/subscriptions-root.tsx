@@ -23,6 +23,7 @@ interface SubscriptionsRootState {
   suggestions: SubscriptionCandidate[];
   scanning: boolean;
   scanRan: boolean;
+  scanError: string | null;
 }
 
 export default class SubscriptionsRoot extends React.Component<
@@ -44,6 +45,7 @@ export default class SubscriptionsRoot extends React.Component<
     suggestions: [],
     scanning: false,
     scanRan: false,
+    scanError: null,
   };
 
   componentDidMount() {
@@ -76,7 +78,7 @@ export default class SubscriptionsRoot extends React.Component<
   };
 
   _onScan = async () => {
-    this.setState({ scanning: true });
+    this.setState({ scanning: true, scanError: null });
     try {
       const suggestions = await scanRecentMessages(SubscriptionsStore.trackedVendorEmails());
       if (!this._mounted) return;
@@ -84,7 +86,12 @@ export default class SubscriptionsRoot extends React.Component<
     } catch (err) {
       AppEnv.reportError(err);
       if (!this._mounted) return;
-      this.setState({ suggestions: [], scanning: false, scanRan: true });
+      this.setState({
+        suggestions: [],
+        scanning: false,
+        scanRan: true,
+        scanError: err instanceof Error ? err.message : String(err),
+      });
     }
   };
 
@@ -148,8 +155,18 @@ export default class SubscriptionsRoot extends React.Component<
   }
 
   _renderSuggestions() {
-    const { suggestions, scanning, scanRan } = this.state;
+    const { suggestions, scanning, scanRan, scanError } = this.state;
     if (!scanRan && suggestions.length === 0) return null;
+    if (scanError) {
+      return (
+        <div className="moros-suggestions">
+          <div className="moros-section-title">{localized('Detected in your inbox')}</div>
+          <div className="moros-empty moros-scan-error">
+            {localized('The inbox scan failed: %@', scanError)}
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="moros-suggestions">
         <div className="moros-section-title">{localized('Detected in your inbox')}</div>
