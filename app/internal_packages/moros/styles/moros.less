@@ -69,6 +69,45 @@
     outline: none;
   }
 
+  .moros-due-date {
+    padding: 2px 4px;
+    font-size: @font-size-smaller;
+    color: @text-color-subtle;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: @border-radius-base;
+    outline: none;
+
+    &:hover,
+    &:focus {
+      border-color: @input-border-color;
+      background: @input-bg;
+    }
+
+    &.is-overdue {
+      color: @color-error;
+    }
+  }
+
+  .moros-month-nav {
+    display: flex;
+    align-items: center;
+    gap: @spacing-half;
+    margin-top: @spacing-half;
+
+    .moros-month-label {
+      min-width: 130px;
+      text-align: center;
+      font-size: @font-size-small;
+      font-weight: @font-weight-medium;
+      color: @text-color-subtle;
+    }
+
+    .moros-month-toggle {
+      margin-left: @spacing-half;
+    }
+  }
+
   .moros-cards {
     display: flex;
     gap: @spacing-standard;

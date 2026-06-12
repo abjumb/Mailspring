@@ -3,8 +3,11 @@ import { clipboard } from 'electron';
 import { localized } from 'mailspring-exports';
 import VaultStore, { VaultEntry, VaultEntryKind } from './vault-store';
 
+const CLIPBOARD_CLEAR_MS = 30000;
+
 interface VaultRootState {
   entries: ReadonlyArray<VaultEntry>;
+  searchQuery: string;
   draftName: string;
   draftUsername: string;
   draftSecret: string;
@@ -20,9 +23,14 @@ export default class VaultRoot extends React.Component<Record<string, unknown>, 
 
   _unlisten?: () => void;
   _copiedTimer: ReturnType<typeof setTimeout> | null = null;
+  _clipboardClearTimer: ReturnType<typeof setTimeout> | null = null;
+  // Held (outside state) only to verify the clipboard still contains our
+  // secret before auto-clearing — never rendered.
+  _copiedSecret: string | null = null;
 
   state: VaultRootState = {
     entries: VaultStore.items(),
+    searchQuery: '',
     draftName: '',
     draftUsername: '',
     draftSecret: '',
@@ -40,6 +48,8 @@ export default class VaultRoot extends React.Component<Record<string, unknown>, 
   componentWillUnmount() {
     if (this._unlisten) this._unlisten();
     if (this._copiedTimer) clearTimeout(this._copiedTimer);
+    if (this._clipboardClearTimer) clearTimeout(this._clipboardClearTimer);
+    this._copiedSecret = null;
   }
 
   _onCreate = async () => {
@@ -65,6 +75,17 @@ export default class VaultRoot extends React.Component<Record<string, unknown>, 
     if (this._copiedTimer) clearTimeout(this._copiedTimer);
     this.setState({ copiedId: entry.id });
     this._copiedTimer = setTimeout(() => this.setState({ copiedId: null }), 1500);
+
+    // Auto-clear after 30s, but only if the clipboard still holds this
+    // secret — don't stomp something the user copied in the meantime.
+    this._copiedSecret = secret;
+    if (this._clipboardClearTimer) clearTimeout(this._clipboardClearTimer);
+    this._clipboardClearTimer = setTimeout(() => {
+      if (this._copiedSecret !== null && clipboard.readText() === this._copiedSecret) {
+        clipboard.clear();
+      }
+      this._copiedSecret = null;
+    }, CLIPBOARD_CLEAR_MS);
   };
 
   _onToggleReveal = async (entry: VaultEntry) => {
@@ -113,16 +134,35 @@ export default class VaultRoot extends React.Component<Record<string, unknown>, 
     );
   }
 
+  _filteredEntries(): VaultEntry[] {
+    const query = this.state.searchQuery.trim().toLowerCase();
+    const entries = [...this.state.entries];
+    if (!query) return entries;
+    return entries.filter((entry) =>
+      [entry.name, entry.username, entry.url].some((field) => field.toLowerCase().includes(query))
+    );
+  }
+
   render() {
+    const visible = this._filteredEntries();
     return (
       <div className="moros-root moros-vault">
         <div className="moros-header">
           <h2>{localized('Vault')}</h2>
           <div className="moros-header-note">
             {localized(
-              'Secrets are encrypted with your operating system keychain — they are never written to disk in plaintext.'
+              'Secrets are encrypted with your operating system keychain — they are never written to disk in plaintext. Copied secrets are cleared from the clipboard after 30 seconds.'
             )}
           </div>
+        </div>
+        <div className="moros-toolbar-row">
+          <input
+            type="text"
+            className="moros-input"
+            placeholder={localized('Search vault…')}
+            value={this.state.searchQuery}
+            onChange={(e) => this.setState({ searchQuery: e.target.value })}
+          />
         </div>
         <div className="moros-toolbar-row">
           <select
@@ -166,11 +206,13 @@ export default class VaultRoot extends React.Component<Record<string, unknown>, 
           </button>
         </div>
         <div className="moros-scroll-region">
-          {this.state.entries.length > 0 ? (
-            this.state.entries.map((entry) => this._renderEntry(entry))
+          {visible.length > 0 ? (
+            visible.map((entry) => this._renderEntry(entry))
           ) : (
             <div className="moros-empty">
-              {localized('No entries yet — store an API key or password above.')}
+              {this.state.entries.length > 0
+                ? localized('No entries match your search.')
+                : localized('No entries yet — store an API key or password above.')}
             </div>
           )}
         </div>

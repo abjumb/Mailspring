@@ -8,6 +8,7 @@ import TasksStore, {
   PRIORITY_LABELS,
   STATUS_LABELS,
   STATUS_ORDER,
+  isOverdue,
 } from './tasks-store';
 
 interface TasksRootState {
@@ -62,7 +63,13 @@ export default class TasksRoot extends React.Component<Record<string, unknown>, 
             </option>
           ))}
         </select>
-        <span className="moros-row-date">{new Date(task.createdAt).toLocaleDateString()}</span>
+        <input
+          type="date"
+          className={`moros-due-date ${isOverdue(task) ? 'is-overdue' : ''}`}
+          title={localized('Due date')}
+          value={task.dueDate || ''}
+          onChange={(e) => TasksStore.update(task.id, { dueDate: e.target.value })}
+        />
         <button
           className="moros-row-delete"
           title={localized('Delete')}

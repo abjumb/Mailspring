@@ -1,4 +1,6 @@
-import MorosDataStore, { MorosRecord } from '../moros-data-store';
+import MorosDataStore, { MorosRecord, todayISO } from '../moros-data-store';
+
+export { todayISO };
 
 export type TransactionKind = 'expense' | 'income';
 
@@ -38,11 +40,25 @@ export function parseAmountToCents(input: string): number | null {
   return Math.round(Math.abs(value) * 100);
 }
 
-export function todayISO() {
-  const d = new Date();
-  const month = `${d.getMonth() + 1}`.padStart(2, '0');
-  const day = `${d.getDate()}`.padStart(2, '0');
-  return `${d.getFullYear()}-${month}-${day}`;
+/** Current month as a 'yyyy-mm' prefix. */
+export function currentMonthPrefix() {
+  return todayISO().slice(0, 7);
+}
+
+/** Shift a 'yyyy-mm' prefix by a number of months (negative = earlier). */
+export function shiftMonthPrefix(prefix: string, delta: number) {
+  const [year, month] = prefix.split('-').map(Number);
+  const shifted = new Date(year, month - 1 + delta, 1);
+  return `${shifted.getFullYear()}-${`${shifted.getMonth() + 1}`.padStart(2, '0')}`;
+}
+
+/** Human label for a 'yyyy-mm' prefix, e.g. "June 2026". */
+export function monthPrefixLabel(prefix: string) {
+  const [year, month] = prefix.split('-').map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString(undefined, {
+    month: 'long',
+    year: 'numeric',
+  });
 }
 
 class FinanceStore extends MorosDataStore<MorosTransaction> {
@@ -58,22 +74,23 @@ class FinanceStore extends MorosDataStore<MorosTransaction> {
     return this.items().reduce((sum, t) => sum + this.signedCents(t), 0);
   }
 
-  monthTotals(): { incomeCents: number; spendingCents: number } {
-    const prefix = todayISO().slice(0, 7);
+  monthTotals(monthPrefix: string): { incomeCents: number; spendingCents: number } {
     let incomeCents = 0;
     let spendingCents = 0;
     for (const t of this.items()) {
-      if (!t.date.startsWith(prefix)) continue;
+      if (!t.date.startsWith(monthPrefix)) continue;
       if (t.kind === 'income') incomeCents += t.amountCents;
       else spendingCents += t.amountCents;
     }
     return { incomeCents, spendingCents };
   }
 
-  sortedByDate(): MorosTransaction[] {
-    return [...this.items()].sort(
-      (a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt
-    );
+  /** Transactions newest-first, optionally restricted to a 'yyyy-mm' month. */
+  sortedByDate(monthPrefix: string | null = null): MorosTransaction[] {
+    const filtered = monthPrefix
+      ? this.items().filter((t) => t.date.startsWith(monthPrefix))
+      : [...this.items()];
+    return filtered.sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
   }
 }
 

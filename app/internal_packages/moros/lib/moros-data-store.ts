@@ -12,6 +12,14 @@ export function morosId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+/** Today as a local-timezone ISO date (yyyy-mm-dd). */
+export function todayISO() {
+  const d = new Date();
+  const month = `${d.getMonth() + 1}`.padStart(2, '0');
+  const day = `${d.getDate()}`.padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
 /**
  * Base class for the Moros module stores. Records live in memory and are
  * persisted as JSON beneath `<config>/moros/`, outside the mail database —

@@ -34,13 +34,19 @@ The guiding constraints:
 
 ### Phase 2 — Module depth
 
-- [ ] Tasks: due dates, labels, search/filter, board (kanban) view, drag to reorder,
-      keyboard shortcuts (`c` to create, `1-4` to set priority — Linear bindings).
+- [x] Tasks: due dates with overdue highlighting; priority + due-date ordering within
+      status groups.
+- [ ] Tasks: labels, search/filter, board (kanban) view, drag to reorder, keyboard
+      shortcuts (`c` to create, `1-4` to set priority — Linear bindings).
 - [ ] Tasks: "Create task from email" action in the message toolbar (link back to thread).
-- [ ] Finance: budgets per category, month navigation, CSV import, simple charts
-      (reuse the activity dashboard's chart primitives), configurable currency.
-- [ ] Vault: TOTP support, secret strength meter, auto-clearing clipboard (30 s),
-      search, import from CSV/1Password/Bitwarden formats.
+- [x] Finance: month navigation (summary cards + transaction list scoped to the
+      viewed month, with full-history toggle).
+- [ ] Finance: budgets per category, CSV import, simple charts (reuse the activity
+      dashboard's chart primitives), configurable currency.
+- [x] Vault: search, auto-clearing clipboard (30 s — only when the clipboard still
+      holds the copied secret).
+- [ ] Vault: TOTP support, secret strength meter, import from CSV/1Password/Bitwarden
+      formats.
 
 ### Phase 3 — Linear shell
 

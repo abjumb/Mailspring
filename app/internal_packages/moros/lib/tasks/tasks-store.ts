@@ -1,4 +1,4 @@
-import MorosDataStore, { MorosRecord } from '../moros-data-store';
+import MorosDataStore, { MorosRecord, todayISO } from '../moros-data-store';
 
 export type TaskStatus = 'backlog' | 'todo' | 'in-progress' | 'done';
 export type TaskPriority = 'none' | 'urgent' | 'high' | 'medium' | 'low';
@@ -7,6 +7,8 @@ export interface MorosTask extends MorosRecord {
   title: string;
   status: TaskStatus;
   priority: TaskPriority;
+  /** Optional ISO date (yyyy-mm-dd). Empty string / undefined = no due date. */
+  dueDate?: string;
 }
 
 export const STATUS_ORDER: TaskStatus[] = ['in-progress', 'todo', 'backlog', 'done'];
@@ -34,6 +36,18 @@ export const NEXT_STATUS: { [S in TaskStatus]: TaskStatus } = {
   done: 'backlog',
 };
 
+const PRIORITY_RANK: { [P in TaskPriority]: number } = {
+  urgent: 0,
+  high: 1,
+  medium: 2,
+  low: 3,
+  none: 4,
+};
+
+export function isOverdue(task: MorosTask) {
+  return !!task.dueDate && task.status !== 'done' && task.dueDate < todayISO();
+}
+
 class TasksStore extends MorosDataStore<MorosTask> {
   constructor() {
     super('tasks.json');
@@ -48,6 +62,16 @@ class TasksStore extends MorosDataStore<MorosTask> {
     };
     for (const task of this.items()) {
       (groups[task.status] || groups.backlog).push(task);
+    }
+    // Linear ordering within a group: priority first, then nearest due date
+    // (undated last), then newest first.
+    for (const status of Object.keys(groups) as TaskStatus[]) {
+      groups[status].sort(
+        (a, b) =>
+          PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] ||
+          (a.dueDate || '9999').localeCompare(b.dueDate || '9999') ||
+          b.createdAt - a.createdAt
+      );
     }
     return groups;
   }

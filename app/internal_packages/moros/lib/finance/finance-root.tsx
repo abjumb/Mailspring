@@ -4,13 +4,18 @@ import FinanceStore, {
   CATEGORIES,
   MorosTransaction,
   TransactionKind,
+  currentMonthPrefix,
   formatCents,
+  monthPrefixLabel,
   parseAmountToCents,
+  shiftMonthPrefix,
   todayISO,
 } from './finance-store';
 
 interface FinanceRootState {
   transactions: ReadonlyArray<MorosTransaction>;
+  /** 'yyyy-mm' month being viewed, or null for the full history. */
+  viewMonth: string | null;
   draftDescription: string;
   draftAmount: string;
   draftKind: TransactionKind;
@@ -28,6 +33,7 @@ export default class FinanceRoot extends React.Component<
 
   state: FinanceRootState = {
     transactions: FinanceStore.items(),
+    viewMonth: currentMonthPrefix(),
     draftDescription: '',
     draftAmount: '',
     draftKind: 'expense',
@@ -59,12 +65,61 @@ export default class FinanceRoot extends React.Component<
     this.setState({ draftDescription: '', draftAmount: '' });
   };
 
+  _renderMonthNav() {
+    const { viewMonth } = this.state;
+    return (
+      <div className="moros-month-nav">
+        <button
+          className="btn"
+          title={localized('Previous month')}
+          onClick={() =>
+            this.setState({
+              viewMonth: shiftMonthPrefix(viewMonth || currentMonthPrefix(), -1),
+            })
+          }
+        >
+          ‹
+        </button>
+        <span className="moros-month-label">
+          {viewMonth ? monthPrefixLabel(viewMonth) : localized('All transactions')}
+        </span>
+        <button
+          className="btn"
+          title={localized('Next month')}
+          onClick={() =>
+            this.setState({
+              viewMonth: shiftMonthPrefix(viewMonth || currentMonthPrefix(), 1),
+            })
+          }
+        >
+          ›
+        </button>
+        <button
+          className="btn moros-month-toggle"
+          onClick={() => this.setState({ viewMonth: viewMonth ? null : currentMonthPrefix() })}
+        >
+          {viewMonth ? localized('Show all') : localized('This month')}
+        </button>
+      </div>
+    );
+  }
+
   _renderSummary() {
-    const { incomeCents, spendingCents } = FinanceStore.monthTotals();
+    const month = this.state.viewMonth || currentMonthPrefix();
+    const { incomeCents, spendingCents } = FinanceStore.monthTotals(month);
+    const monthName = monthPrefixLabel(month);
     const cards = [
       { label: localized('Balance'), value: FinanceStore.balanceCents(), className: '' },
-      { label: localized('Income this month'), value: incomeCents, className: 'is-income' },
-      { label: localized('Spending this month'), value: -spendingCents, className: 'is-expense' },
+      {
+        label: `${localized('Income')} — ${monthName}`,
+        value: incomeCents,
+        className: 'is-income',
+      },
+      {
+        label: `${localized('Spending')} — ${monthName}`,
+        value: -spendingCents,
+        className: 'is-expense',
+      },
     ];
     return (
       <div className="moros-cards">
@@ -99,12 +154,13 @@ export default class FinanceRoot extends React.Component<
   }
 
   render() {
-    const transactions = FinanceStore.sortedByDate();
+    const transactions = FinanceStore.sortedByDate(this.state.viewMonth);
 
     return (
       <div className="moros-root moros-finance">
         <div className="moros-header">
           <h2>{localized('Finance')}</h2>
+          {this._renderMonthNav()}
         </div>
         {this._renderSummary()}
         <div className="moros-toolbar-row">
@@ -158,7 +214,9 @@ export default class FinanceRoot extends React.Component<
             transactions.map((t) => this._renderTransaction(t))
           ) : (
             <div className="moros-empty">
-              {localized('No transactions yet — record income or spending above.')}
+              {this.state.viewMonth && this.state.transactions.length > 0
+                ? localized('No transactions in this month.')
+                : localized('No transactions yet — record income or spending above.')}
             </div>
           )}
         </div>
