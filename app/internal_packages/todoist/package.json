@@ -1,0 +1,16 @@
+{
+  "name": "todoist",
+  "version": "0.1.0",
+  "main": "./lib/main",
+  "displayName": "Todoist",
+  "description": "Adds Todoist task sync and a mini calendar widget to the mail sidebar.",
+  "license": "GPL-3.0",
+  "private": true,
+  "isOptional": true,
+  "engines": {
+    "mailspring": "*"
+  },
+  "windowTypes": {
+    "default": true
+  }
+}
