@@ -12,6 +12,7 @@ import {
   MorosVaultPerspective,
 } from './moros-perspectives';
 import TasksRoot from './tasks/tasks-root';
+import CreateTaskButton from './tasks/create-task-button';
 import FinanceRoot from './finance/finance-root';
 import VaultRoot from './vault/vault-root';
 
@@ -73,6 +74,8 @@ export function activate() {
     ExtensionRegistry.AccountSidebar.register(extension);
   }
 
+  ComponentRegistry.register(CreateTaskButton, { role: 'ThreadActionsToolbarButton' });
+
   // Restore the previously focused module after a relaunch (the saved
   // perspective can't be deserialized by the core mailbox code).
   const savedType =
@@ -84,6 +87,7 @@ export function activate() {
 }
 
 export function deactivate() {
+  ComponentRegistry.unregister(CreateTaskButton);
   for (const module of MODULES) {
     ComponentRegistry.unregister(module.component);
   }

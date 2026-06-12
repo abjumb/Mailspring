@@ -53,7 +53,8 @@ class TasksStore extends MorosDataStore<MorosTask> {
     super('tasks.json');
   }
 
-  tasksByStatus(): { [S in TaskStatus]: MorosTask[] } {
+  tasksByStatus(query = ''): { [S in TaskStatus]: MorosTask[] } {
+    const normalized = query.trim().toLowerCase();
     const groups: { [S in TaskStatus]: MorosTask[] } = {
       backlog: [],
       todo: [],
@@ -61,6 +62,7 @@ class TasksStore extends MorosDataStore<MorosTask> {
       done: [],
     };
     for (const task of this.items()) {
+      if (normalized && !task.title.toLowerCase().includes(normalized)) continue;
       (groups[task.status] || groups.backlog).push(task);
     }
     // Linear ordering within a group: priority first, then nearest due date

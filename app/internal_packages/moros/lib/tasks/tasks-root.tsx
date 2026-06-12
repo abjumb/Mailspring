@@ -14,6 +14,7 @@ import TasksStore, {
 interface TasksRootState {
   tasks: ReadonlyArray<MorosTask>;
   draftTitle: string;
+  searchQuery: string;
 }
 
 export default class TasksRoot extends React.Component<Record<string, unknown>, TasksRootState> {
@@ -24,6 +25,7 @@ export default class TasksRoot extends React.Component<Record<string, unknown>, 
   state: TasksRootState = {
     tasks: TasksStore.items(),
     draftTitle: '',
+    searchQuery: '',
   };
 
   componentDidMount() {
@@ -96,8 +98,8 @@ export default class TasksRoot extends React.Component<Record<string, unknown>, 
   }
 
   render() {
-    const groups = TasksStore.tasksByStatus();
-    const hasTasks = this.state.tasks.length > 0;
+    const groups = TasksStore.tasksByStatus(this.state.searchQuery);
+    const visibleCount = STATUS_ORDER.reduce((sum, status) => sum + groups[status].length, 0);
 
     return (
       <div className="moros-root moros-tasks">
@@ -113,16 +115,25 @@ export default class TasksRoot extends React.Component<Record<string, unknown>, 
             onChange={(e) => this.setState({ draftTitle: e.target.value })}
             onKeyDown={(e) => e.key === 'Enter' && this._onCreate()}
           />
+          <input
+            type="text"
+            className="moros-input moros-input-search"
+            placeholder={localized('Search…')}
+            value={this.state.searchQuery}
+            onChange={(e) => this.setState({ searchQuery: e.target.value })}
+          />
           <button className="btn btn-emphasis" onClick={this._onCreate}>
             {localized('New Task')}
           </button>
         </div>
         <div className="moros-scroll-region">
-          {hasTasks ? (
+          {visibleCount > 0 ? (
             STATUS_ORDER.map((status) => this._renderGroup(status, groups[status]))
           ) : (
             <div className="moros-empty">
-              {localized('No tasks yet — add your first one above.')}
+              {this.state.tasks.length > 0
+                ? localized('No tasks match your search.')
+                : localized('No tasks yet — add your first one above.')}
             </div>
           )}
         </div>

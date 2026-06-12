@@ -36,9 +36,11 @@ The guiding constraints:
 
 - [x] Tasks: due dates with overdue highlighting; priority + due-date ordering within
       status groups.
-- [ ] Tasks: labels, search/filter, board (kanban) view, drag to reorder, keyboard
-      shortcuts (`c` to create, `1-4` to set priority — Linear bindings).
-- [ ] Tasks: "Create task from email" action in the message toolbar (link back to thread).
+- [x] Tasks: search/filter.
+- [x] Tasks: "Create task from email" — thread-actions toolbar button files the
+      selected thread(s) as tasks titled with their subjects.
+- [ ] Tasks: labels, board (kanban) view, drag to reorder, keyboard shortcuts
+      (`c` to create, `1-4` to set priority — Linear bindings), task → thread link-back.
 - [x] Finance: month navigation (summary cards + transaction list scoped to the
       viewed month, with full-history toggle).
 - [ ] Finance: budgets per category, CSV import, simple charts (reuse the activity
