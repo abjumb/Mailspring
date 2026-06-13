@@ -47,7 +47,7 @@ export const cryptoRandomInt: RandomInt = (maxExclusive) => {
   return x % maxExclusive;
 };
 
-function clampLength(length: number): number {
+export function clampLength(length: number): number {
   if (!Number.isFinite(length)) return DEFAULT_GENERATOR_OPTIONS.length;
   return Math.min(MAX_LENGTH, Math.max(MIN_LENGTH, Math.floor(length)));
 }

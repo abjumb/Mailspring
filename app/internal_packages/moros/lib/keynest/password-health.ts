@@ -40,6 +40,8 @@ export function analyzeHealth(
     entries,
     weakCount: entries.filter((e) => e.weak).length,
     reusedCount: entries.filter((e) => e.reused).length,
-    checked: items.length,
+    // Only entries with a stored secret are actually evaluated; counting
+    // empty-secret entries here would overstate what was checked.
+    checked: items.filter((item) => item.secret.length > 0).length,
   };
 }

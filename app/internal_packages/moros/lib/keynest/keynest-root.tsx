@@ -7,6 +7,7 @@ import {
   DEFAULT_GENERATOR_OPTIONS,
   MIN_LENGTH,
   MAX_LENGTH,
+  clampLength,
   generatePassword,
 } from './password-generator';
 import { estimateStrength, StrengthScore } from './password-strength';
@@ -15,6 +16,7 @@ import { HealthSummary } from './password-health';
 type BooleanGeneratorOption = 'lowercase' | 'uppercase' | 'digits' | 'symbols';
 
 const CLIPBOARD_CLEAR_MS = 30000;
+const REVEAL_HIDE_MS = 15000;
 
 type KindFilter = 'all' | KeyNestEntryKind;
 
@@ -46,8 +48,12 @@ export default class KeyNestRoot extends React.Component<
 
   _unlisten?: () => void;
   _mounted = false;
+  // Bumped whenever the entry set changes, so an in-flight audit computed
+  // against the old set can detect it became stale and discard its result.
+  _auditEpoch = 0;
   _copiedTimer: ReturnType<typeof setTimeout> | null = null;
   _clipboardClearTimer: ReturnType<typeof setTimeout> | null = null;
+  _revealHideTimer: ReturnType<typeof setTimeout> | null = null;
   // Held (outside state) only to verify the clipboard still contains our
   // secret before auto-clearing — never rendered.
   _copiedSecret: string | null = null;
@@ -75,10 +81,11 @@ export default class KeyNestRoot extends React.Component<
   componentDidMount() {
     this._mounted = true;
     // Adding or removing an entry invalidates a previous health audit, so
-    // clear it whenever the entry set changes.
-    this._unlisten = KeyNestStore.listen(() =>
-      this.setState({ entries: KeyNestStore.items(), health: null })
-    );
+    // clear it (and invalidate any in-flight audit) when the entry set changes.
+    this._unlisten = KeyNestStore.listen(() => {
+      this._auditEpoch += 1;
+      this.setState({ entries: KeyNestStore.items(), health: null });
+    });
   }
 
   componentWillUnmount() {
@@ -86,8 +93,15 @@ export default class KeyNestRoot extends React.Component<
     if (this._unlisten) this._unlisten();
     if (this._copiedTimer) clearTimeout(this._copiedTimer);
     if (this._clipboardClearTimer) clearTimeout(this._clipboardClearTimer);
+    if (this._revealHideTimer) clearTimeout(this._revealHideTimer);
     this._copiedSecret = null;
   }
+
+  _hideRevealed = () => {
+    if (this._revealHideTimer) clearTimeout(this._revealHideTimer);
+    this._revealHideTimer = null;
+    this.setState({ revealedId: null, revealedSecret: null });
+  };
 
   _onCreate = async () => {
     const name = this.state.draftName.trim();
@@ -134,16 +148,19 @@ export default class KeyNestRoot extends React.Component<
 
   _onToggleReveal = async (entry: KeyNestEntry) => {
     if (this.state.revealedId === entry.id) {
-      this.setState({ revealedId: null, revealedSecret: null });
+      this._hideRevealed();
       return;
     }
     const secret = await KeyNestStore.getSecret(entry.id);
     this.setState({ revealedId: entry.id, revealedSecret: secret === undefined ? null : secret });
+    // Don't leave plaintext on screen if the user walks away.
+    if (this._revealHideTimer) clearTimeout(this._revealHideTimer);
+    this._revealHideTimer = setTimeout(this._hideRevealed, REVEAL_HIDE_MS);
   };
 
   _onRemove = async (entry: KeyNestEntry) => {
     if (this.state.revealedId === entry.id) {
-      this.setState({ revealedId: null, revealedSecret: null });
+      this._hideRevealed();
     }
     await KeyNestStore.removeWithSecret(entry.id);
   };
@@ -162,14 +179,25 @@ export default class KeyNestRoot extends React.Component<
   };
 
   _onAudit = async () => {
+    const epoch = this._auditEpoch;
     this.setState({ auditing: true, auditError: null });
     try {
       const health = await KeyNestStore.auditPasswords();
       if (!this._mounted) return;
+      // The entry set changed while auditing — the result is stale; drop it
+      // (the listener already cleared `health`) but stop the spinner.
+      if (this._auditEpoch !== epoch) {
+        this.setState({ auditing: false });
+        return;
+      }
       this.setState({ health, auditing: false });
     } catch (err) {
       AppEnv.reportError(err);
       if (!this._mounted) return;
+      if (this._auditEpoch !== epoch) {
+        this.setState({ auditing: false });
+        return;
+      }
       this.setState({
         auditing: false,
         auditError: err instanceof Error ? err.message : String(err),
@@ -245,6 +273,7 @@ export default class KeyNestRoot extends React.Component<
           title={localized('Length')}
           value={genOptions.length}
           onChange={(e) => this._setGenOption({ length: Number(e.target.value) })}
+          onBlur={(e) => this._setGenOption({ length: clampLength(Number(e.target.value)) })}
         />
         {toggle('lowercase', localized('a–z'))}
         {toggle('uppercase', localized('A–Z'))}

@@ -4,6 +4,7 @@ import {
   GeneratorOptions,
   MAX_LENGTH,
   MIN_LENGTH,
+  clampLength,
   enabledPools,
   generatePassword,
 } from '../internal_packages/moros/lib/keynest/password-generator';
@@ -61,6 +62,13 @@ describe('KeyNest password generator', () => {
   it('reports the enabled pools', () => {
     expect(enabledPools(opts()).length).toBe(4);
     expect(enabledPools(opts({ uppercase: false, digits: false, symbols: false })).length).toBe(1);
+  });
+
+  it('clampLength bounds and floors the requested length', () => {
+    expect(clampLength(4)).toBe(MIN_LENGTH);
+    expect(clampLength(9999)).toBe(MAX_LENGTH);
+    expect(clampLength(20.7)).toBe(20);
+    expect(clampLength(NaN)).toBe(DEFAULT_GENERATOR_OPTIONS.length);
   });
 
   it('default crypto source yields a valid password', () => {
@@ -136,6 +144,7 @@ describe('KeyNest password health audit', () => {
     ]);
     expect(summary.weakCount).toBe(0);
     expect(summary.reusedCount).toBe(0);
-    expect(summary.checked).toBe(2);
+    // Empty-secret entries are not counted as "checked".
+    expect(summary.checked).toBe(0);
   });
 });
