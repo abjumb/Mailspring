@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the implementation plan for adding drag-and-drop interactions to calendar events in Mailspring's calendar views. The goal is to allow users to:
+This document outlines the implementation plan for adding drag-and-drop interactions to calendar events in Moros's calendar views. The goal is to allow users to:
 
 1. **Week View**: Drag event center to move, drag top edge to adjust start time, drag bottom edge to adjust end time
 2. **Month View**: Drag event center to move, drag left edge to adjust start date, drag right edge to adjust end date
@@ -591,7 +591,7 @@ _onKeyDown = (e: React.KeyboardEvent) => {
 
 #### 7.2 Undo Support
 
-Integrate with Mailspring's undo system:
+Integrate with Moros's undo system:
 
 ```typescript
 // After successful drag

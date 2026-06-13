@@ -99,7 +99,7 @@ export function createICSString(options: CreateEventOptions): string {
 
   // Create VCALENDAR component
   const calendar = new ICAL.Component(['vcalendar', [], []]);
-  calendar.updatePropertyWithValue('prodid', '-//Mailspring//Calendar//EN');
+  calendar.updatePropertyWithValue('prodid', '-//Moros//Calendar//EN');
   calendar.updatePropertyWithValue('version', '2.0');
   calendar.updatePropertyWithValue('calscale', 'GREGORIAN');
 
@@ -273,7 +273,7 @@ export function createRecurrenceException(
 
   // Create exception VCALENDAR
   const exceptionCal = new ICAL.Component(['vcalendar', [], []]);
-  exceptionCal.updatePropertyWithValue('prodid', '-//Mailspring//Calendar//EN');
+  exceptionCal.updatePropertyWithValue('prodid', '-//Moros//Calendar//EN');
   exceptionCal.updatePropertyWithValue('version', '2.0');
 
   // Clone the VEVENT for the exception
@@ -413,15 +413,15 @@ export function getRecurrenceInfo(ics: string): {
 }
 ```
 
-### 1.3 Export from `mailspring-exports`
+### 1.3 Export from `moros-exports`
 
-Update `app/src/global/mailspring-exports.ts` to export the new module:
+Update `app/src/global/moros-exports.ts` to export the new module:
 
 ```typescript
 export * as ICSEventHelpers from '../ics-event-helpers';
 ```
 
-Update `app/src/global/mailspring-exports.d.ts`:
+Update `app/src/global/moros-exports.d.ts`:
 
 ```typescript
 export type ICSEventHelpers = typeof import('../ics-event-helpers');
@@ -440,7 +440,7 @@ Create a reusable dialog component for recurring event modifications.
 
 ```typescript
 import React from 'react';
-import { localized } from 'mailspring-exports';
+import { localized } from 'moros-exports';
 
 export type RecurringEventChoice = 'this-occurrence' | 'all-occurrences' | 'cancel';
 
@@ -505,7 +505,7 @@ import {
   DatabaseStore,
   Actions,
   SyncbackEventTask
-} from 'mailspring-exports';
+} from 'moros-exports';
 import { showRecurringEventDialog, RecurringEventChoice } from './recurring-event-dialog';
 
 async _persistDragChange(dragState: DragState) {
@@ -755,7 +755,7 @@ _onSave = async () => {
 
 1. Create `app/src/ics-event-helpers.ts` with core functions
 2. Add comprehensive unit tests in `app/spec/ics-event-helpers-spec.ts`
-3. Export from `mailspring-exports`
+3. Export from `moros-exports`
 4. Verify ical.js API compatibility with existing usage
 
 ### Phase 2: Recurring Event Dialog
@@ -815,8 +815,8 @@ _onSave = async () => {
 - `app/internal_packages/main-calendar/lib/core/recurring-event-dialog.tsx`
 
 ### Modified Files
-- `app/src/global/mailspring-exports.ts` - Add ICSEventHelpers export
-- `app/src/global/mailspring-exports.d.ts` - Add type definitions
+- `app/src/global/moros-exports.ts` - Add ICSEventHelpers export
+- `app/src/global/moros-exports.d.ts` - Add type definitions
 - `app/internal_packages/main-calendar/lib/core/mailspring-calendar.tsx` - Update persistence
 - `app/internal_packages/main-calendar/lib/core/calendar-event-popover.tsx` - Update save method
 

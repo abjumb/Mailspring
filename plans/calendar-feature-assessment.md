@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The Mailspring calendar is currently a **read-only preview** with a notice stating: *"Calendar is launching later this year! This preview is read-only and only supports Google calendar."*
+The Moros calendar is currently a **read-only preview** with a notice stating: *"Calendar is launching later this year! This preview is read-only and only supports Google calendar."*
 
 The calendar functions well as a viewer with excellent email RSVP integration, but lacks all write capabilities. The architecture and data models are solid - the main gap is the write path and additional UI views.
 
@@ -195,7 +195,7 @@ Every internal package follows this pattern:
 
 ```typescript
 // app/internal_packages/main-calendar/lib/main.tsx
-import { WorkspaceStore, ComponentRegistry } from 'mailspring-exports';
+import { WorkspaceStore, ComponentRegistry } from 'moros-exports';
 import { MailspringCalendar } from './core/mailspring-calendar';
 
 export function activate() {

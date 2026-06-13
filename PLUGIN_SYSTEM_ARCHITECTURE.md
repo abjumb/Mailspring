@@ -1,6 +1,6 @@
-# Mailspring Plugin System Architecture
+# Moros Plugin System Architecture
 
-This document provides a comprehensive overview of the Mailspring plugin system for developers looking to understand, extend, or improve the plugin infrastructure.
+This document provides a comprehensive overview of the Moros plugin system for developers looking to understand, extend, or improve the plugin infrastructure.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ This document provides a comprehensive overview of the Mailspring plugin system 
 
 ## Overview
 
-Mailspring uses a robust plugin architecture where features are implemented as "packages". The system is managed by two core files:
+Moros uses a robust plugin architecture where features are implemented as "packages". The system is managed by two core files:
 
 | File | Purpose |
 |------|---------|
@@ -35,7 +35,7 @@ Plugins are discovered from these directories in order:
 
 | Directory | Purpose | Notes |
 |-----------|---------|-------|
-| `<resourcePath>/internal_packages/` | Built-in plugins | 51 packages bundled with Mailspring |
+| `<resourcePath>/internal_packages/` | Built-in plugins | 51 packages bundled with Moros |
 | `<configDirPath>/packages/` | User-installed plugins | Skipped in safe mode |
 | `<configDirPath>/dev/packages/` | Developer mode plugins | Only loaded in dev mode |
 | `<resourcePath>/spec/fixtures/packages/` | Test packages | Only in spec mode |
@@ -44,11 +44,11 @@ Plugins are discovered from these directories in order:
 
 | Platform | Config Directory |
 |----------|------------------|
-| Linux | `~/.config/Mailspring/` |
-| macOS | `~/Library/Application Support/Mailspring/` |
-| Windows | `%APPDATA%\Mailspring\` |
+| Linux | `~/.config/Moros/` |
+| macOS | `~/Library/Application Support/Moros/` |
+| Windows | `%APPDATA%\Moros\` |
 
-In development mode, data is stored separately (e.g., `~/.config/Mailspring-dev/` on Linux).
+In development mode, data is stored separately (e.g., `~/.config/Moros-dev/` on Linux).
 
 ---
 
@@ -116,7 +116,7 @@ my-plugin/
 | `isOptional` | No | If true, can be disabled by user |
 | `isDefault` | No | If true, enabled by default |
 | `syncInit` | No | If true, loads immediately during startup |
-| `isIdentityRequired` | No | If true, requires Mailspring account to activate |
+| `isIdentityRequired` | No | If true, requires Moros account to activate |
 | `theme` | No | Set to `"ui"` for theme plugins |
 
 ### Window Types
@@ -138,7 +138,7 @@ my-plugin/
 Every plugin must export `activate()` and `deactivate()` functions:
 
 ```typescript
-import { ComponentRegistry, ExtensionRegistry } from 'mailspring-exports';
+import { ComponentRegistry, ExtensionRegistry } from 'moros-exports';
 import MyComponent from './my-component';
 import MyExtension from './my-extension';
 
@@ -242,7 +242,7 @@ Package.activate()
 Injects React components into UI locations:
 
 ```typescript
-import { ComponentRegistry, WorkspaceStore } from 'mailspring-exports';
+import { ComponentRegistry, WorkspaceStore } from 'moros-exports';
 
 // Register with a role
 ComponentRegistry.register(MyButton, {
@@ -294,7 +294,7 @@ ComponentRegistry.register(MyComponent, {
 Register behavioral extensions:
 
 ```typescript
-import { ExtensionRegistry } from 'mailspring-exports';
+import { ExtensionRegistry } from 'moros-exports';
 
 // Available extension registries:
 ExtensionRegistry.Composer.register(MyComposerExtension);
@@ -388,8 +388,8 @@ AppEnv.packages.createPackageManually();
 ### Manual Installation
 
 1. Download/create plugin folder with valid `package.json`
-2. Copy to `~/.config/Mailspring/packages/` (or platform equivalent)
-3. Restart Mailspring (or call `installPackageFromPath()`)
+2. Copy to `~/.config/Moros/packages/` (or platform equivalent)
+3. Restart Moros (or call `installPackageFromPath()`)
 
 ### Validation Requirements
 
@@ -460,7 +460,7 @@ Optional plugins can be disabled via config:
 
 ### Global APIs
 
-**mailspring-exports:**
+**moros-exports:**
 - `Actions` - Flux action dispatcher
 - `DatabaseStore` - Read-only database queries
 - `Stores` - Application state (DraftStore, MessageStore, TaskQueue, etc.)
@@ -468,7 +468,7 @@ Optional plugins can be disabled via config:
 - `Tasks` - Async operations (SendDraftTask, ChangeLabelsTask, etc.)
 - All registries
 
-**mailspring-component-kit:**
+**moros-component-kit:**
 - `InjectedComponent`, `InjectedComponentSet`
 - `Modal`, `Menu`, `Flexbox`, `Spinner`
 - `KeyCommandsRegion`, `ListensToFluxStore`
@@ -477,7 +477,7 @@ Optional plugins can be disabled via config:
 
 - Hot reload: `Ctrl+R` (Windows/Linux) or `Cmd+R` (macOS)
 - Dev tools: Menu > Developer > Toggle Developer Tools
-- Console access: `$m` provides `mailspring-exports`
+- Console access: `$m` provides `moros-exports`
 
 ### External Resources
 
@@ -499,5 +499,5 @@ Optional plugins can be disabled via config:
 | `app/src/extensions/composer-extension.ts` | ComposerExtension base class |
 | `app/src/extensions/message-view-extension.ts` | MessageViewExtension base class |
 | `app/src/components/injected-component.tsx` | Renders registered components |
-| `app/src/global/mailspring-exports.ts` | Global API exports |
+| `app/src/global/moros-exports.ts` | Global API exports |
 | `app/internal_packages/theme-picker/` | Theme selection UI (reference for plugin UI) |

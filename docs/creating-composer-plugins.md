@@ -1,6 +1,6 @@
 # Creating Composer Plugins
 
-This guide covers how to build plugins that extend the Mailspring composer — the email drafting interface. Composer plugins can add toolbar buttons, modify draft content, inject UI components, extend the Slate rich-text editor, and hook into the send lifecycle.
+This guide covers how to build plugins that extend the Moros composer — the email drafting interface. Composer plugins can add toolbar buttons, modify draft content, inject UI components, extend the Slate rich-text editor, and hook into the send lifecycle.
 
 ## Table of Contents
 
@@ -41,7 +41,7 @@ This guide covers how to build plugins that extend the Mailspring composer — t
 
 ## Architecture Overview
 
-The Mailspring composer is built on several layers:
+The Moros composer is built on several layers:
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -121,7 +121,7 @@ Most composer plugins should set all three to `true`.
 Every plugin must export `activate()` and `deactivate()` from `lib/main.ts`:
 
 ```typescript
-import { ComponentRegistry, ExtensionRegistry } from 'mailspring-exports';
+import { ComponentRegistry, ExtensionRegistry } from 'moros-exports';
 import MyButton from './my-button';
 import MyComposerExtension from './my-extension';
 
@@ -177,8 +177,8 @@ The most common extension point. Your component renders a button in the composer
 // lib/my-button.tsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { PropTypes, Actions, Message, DraftEditingSession, localized } from 'mailspring-exports';
-import { RetinaImg, Menu } from 'mailspring-component-kit';
+import { PropTypes, Actions, Message, DraftEditingSession, localized } from 'moros-exports';
+import { RetinaImg, Menu } from 'moros-component-kit';
 
 export default class MyComposerButton extends React.Component<{
   draft: Message;
@@ -244,7 +244,7 @@ Footer components appear below the editor body. Used for status messages.
 ```typescript
 // lib/my-status-bar.tsx
 import React from 'react';
-import { Message, MessageWithEditorState } from 'mailspring-exports';
+import { Message, MessageWithEditorState } from 'moros-exports';
 
 export default class MyStatusBar extends React.Component<{
   draft: MessageWithEditorState;
@@ -338,7 +338,7 @@ Source: `app/src/extensions/composer-extension.ts`
 Called once when a brand-new draft is created, before it's displayed:
 
 ```typescript
-import { ComposerExtension, Message } from 'mailspring-exports';
+import { ComposerExtension, Message } from 'moros-exports';
 
 export default class MyExtension extends ComposerExtension {
   static prepareNewDraft({ draft }: { draft: Message }) {
@@ -940,7 +940,7 @@ This "mark as state store" pattern is powerful for any inline autocomplete featu
 
 ## Key Imports Reference
 
-### From `mailspring-exports`
+### From `moros-exports`
 
 ```typescript
 import {
@@ -966,17 +966,17 @@ import {
   // Utilities
   localized,
   PropTypes,
-} from 'mailspring-exports';
+} from 'moros-exports';
 ```
 
-### From `mailspring-component-kit`
+### From `moros-component-kit`
 
 ```typescript
 import {
   RetinaImg,       // Retina-aware images
   Menu,            // Dropdown menu with search, headers, footers
   InjectedComponentSet,
-} from 'mailspring-component-kit';
+} from 'moros-component-kit';
 ```
 
 ### From Slate (for editor plugins)

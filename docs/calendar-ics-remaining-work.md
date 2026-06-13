@@ -9,7 +9,7 @@ This document outlines the remaining issues identified during the code review an
 - ✅ Updated `mailspring-calendar.tsx` drag persistence to use ICS helpers
 - ✅ Updated `calendar-event-popover.tsx` save to use ICS helpers and recurring dialog
 - ✅ Updated keyboard event movement to use ICS helpers
-- ✅ Exported `ICSEventHelpers` from `mailspring-exports`
+- ✅ Exported `ICSEventHelpers` from `moros-exports`
 
 ---
 
@@ -86,7 +86,7 @@ event.title = leftoverText;
 
 **Implementation**:
 ```typescript
-import { ICSEventHelpers } from 'mailspring-exports';
+import { ICSEventHelpers } from 'moros-exports';
 
 // In createEvent method:
 const ics = ICSEventHelpers.createICSString({

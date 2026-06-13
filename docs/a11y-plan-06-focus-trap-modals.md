@@ -283,9 +283,9 @@ const FocusTrap = forwardRef<FocusTrapHandle, FocusTrapProps>(
 **`BuildMarkButtonWithValuePicker`:**
 - `role="dialog"` and `aria-label={localized('Insert link')}`
 
-### Step 6 — Export from `mailspring-component-kit`
+### Step 6 — Export from `moros-component-kit`
 
-Update `app/src/global/mailspring-component-kit.d.ts`:
+Update `app/src/global/moros-component-kit.d.ts`:
 ```typescript
 export const FocusTrap: typeof import('../components/focus-trap').default;
 export const useFocusTrap: typeof import('../components/use-focus-trap').useFocusTrap;
@@ -327,7 +327,7 @@ export const useFocusTrap: typeof import('../components/use-focus-trap').useFocu
 | `app/src/components/time-picker.tsx` | `role="listbox"`, `role="option"`, Escape key handler |
 | `app/src/components/composer-editor/toolbar-component-factories.tsx` | `role="dialog"`, `aria-label`, Escape handlers |
 | `app/src/components/decorators/auto-focuses.tsx` | Remove from `FixedPopover` compose chain |
-| `app/src/global/mailspring-component-kit.d.ts` | Export `FocusTrap`, `useFocusTrap` |
+| `app/src/global/moros-component-kit.d.ts` | Export `FocusTrap`, `useFocusTrap` |
 | `app/src/components/feature-used-up-modal.tsx` | Add `id` to `<h2>` for `aria-labelledby` |
 | `app/internal_packages/main-calendar/lib/core/calendar-event-popover.tsx` | `aria-label` or `aria-labelledby` |
 | `app/internal_packages/theme-picker/lib/main.tsx` | Pass `title` to `Actions.openModal` |

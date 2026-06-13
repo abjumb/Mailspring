@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Mailspring has zero `aria-live` regions anywhere in its UI. This plan introduces a singleton `Announcer` service with two always-mounted DOM nodes, wires it into the existing store/action infrastructure, and covers every user-facing dynamic event that a screen reader user would need to hear. The design avoids React lifecycle issues by keeping the DOM nodes permanently in the document outside the React tree.
+Moros has zero `aria-live` regions anywhere in its UI. This plan introduces a singleton `Announcer` service with two always-mounted DOM nodes, wires it into the existing store/action infrastructure, and covers every user-facing dynamic event that a screen reader user would need to hear. The design avoids React lifecycle issues by keeping the DOM nodes permanently in the document outside the React tree.
 
 ---
 
@@ -160,9 +160,9 @@ initializeReactRoot() {
 
 ---
 
-## 4. Export from `mailspring-exports`
+## 4. Export from `moros-exports`
 
-**File to modify:** `app/src/global/mailspring-exports.js`
+**File to modify:** `app/src/global/moros-exports.js`
 
 ```javascript
 lazyLoadWithGetter('announce', () => require('../services/a11y-announcer').announce);
@@ -434,7 +434,7 @@ describe('a11y-announcer', () => {
 1. Create `app/src/services/a11y-announcer.ts` — no dependencies, testable in isolation
 2. Add `.sr-only` to `app/static/style/utilities.less` — pure CSS, no JS risk
 3. Modify `app/src/app-env.ts` `initializeReactRoot()` to call `initializeLiveRegions()` — foundational
-4. Add `announce` export to `app/src/global/mailspring-exports.js`
+4. Add `announce` export to `app/src/global/moros-exports.js`
 5. Wire `DraftStore._onSendDraftSuccess` and `_onSendDraftFailed` — highest user impact
 6. Wire `UndoRedoStore._onQueueBlock`, `undo()`, `redo()` — covers all thread actions in one hook
 7. Wire `unread-notifications` `Notifier._notifyOne` / `_notifyAll`
