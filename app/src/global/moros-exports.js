@@ -57,7 +57,7 @@ lazyLoadWithGetter(`isRTL`, () => require('../intl').isRTL);
 lazyLoad(`Actions`, 'flux/actions');
 
 // API Endpoints
-lazyLoad(`MorosAPIRequest`, 'flux/mailspring-api-request');
+lazyLoad(`MorosAPIRequest`, 'flux/moros-api-request');
 lazyLoad(`MailsyncProcess`, 'mailsync-process');
 // The Database
 lazyLoad(`Matcher`, 'flux/attributes/matcher');
@@ -225,7 +225,7 @@ lazyLoad(`SystemStartService`, 'system-start-service');
 // Testing
 lazyLoadWithGetter(
   `MorosTestUtils`,
-  () => require('../../spec/mailspring-test-utils').default
+  () => require('../../spec/moros-test-utils').default
 );
 
 process.nextTick(() => {

@@ -3,7 +3,7 @@ import { Utils } from 'moros-exports';
 import { CalendarEvent } from './calendar-event';
 import { EventOccurrence } from './calendar-data-source';
 import { OverlapByEventId } from './week-view-helpers';
-import { EventRendererProps } from './mailspring-calendar';
+import { EventRendererProps } from './moros-calendar';
 import { DragState, HitZone } from './calendar-drag-types';
 
 /*

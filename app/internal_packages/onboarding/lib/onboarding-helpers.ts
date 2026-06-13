@@ -9,7 +9,7 @@ import {
   MailsyncProcess,
   localized,
 } from 'moros-exports';
-import MorosProviderSettings from './mailspring-provider-settings.json';
+import MorosProviderSettings from './moros-provider-settings.json';
 import MailcoreProviderSettings from './mailcore-provider-settings.json';
 import dns from 'dns';
 import {

@@ -183,10 +183,10 @@ exports.createRegistryEntries = createRegistryEntries;
 exports.existsSync = () => fs.existsSync(updateDotExe);
 
 // Register the AppUserModelId with a display name so Windows notifications
-// show "Moros" instead of "com.squirrel.mailspring.mailspring"
+// show "Moros" instead of "com.squirrel.moros.moros"
 // Registry path: HKEY_CURRENT_USER\SOFTWARE\Classes\AppUserModelId\{AUMID}
 function registerAppUserModelId(callback) {
-  const aumid = 'com.squirrel.mailspring.mailspring';
+  const aumid = 'com.squirrel.moros.moros';
   const displayName = 'Moros';
   const iconPath = path.join(appFolder, 'resources', 'mailspring-square.ico');
 
@@ -300,7 +300,7 @@ exports.handleSquirrelInstall = app => {
     icon: fs.existsSync(iconPath) ? iconPath : undefined,
     iconIndex: 0,
     description: 'The best email app for people and teams at work',
-    appUserModelId: 'com.squirrel.mailspring.mailspring',
+    appUserModelId: 'com.squirrel.moros.moros',
     toastActivatorClsid: '{E6AD16B0-2830-48E7-9DB7-439152FA917B}',
   };
 
@@ -321,7 +321,7 @@ exports.handleSquirrelInstall = app => {
   }
 
   // Spawn reg.exe to register AUMID (detached - won't block exit)
-  const aumid = 'com.squirrel.mailspring.mailspring';
+  const aumid = 'com.squirrel.moros.moros';
   const regKey = `HKEY_CURRENT_USER\\SOFTWARE\\Classes\\AppUserModelId\\${aumid}`;
   let regPath = 'reg.exe';
   if (process.env.SystemRoot) {

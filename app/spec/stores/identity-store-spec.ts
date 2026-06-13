@@ -1,6 +1,6 @@
 import { Utils, KeyManager } from 'moros-exports';
 import { IdentityStore } from '../../src/flux/stores/identity-store';
-import * as MorosAPIRequest from '../../src/flux/mailspring-api-request';
+import * as MorosAPIRequest from '../../src/flux/moros-api-request';
 
 const TEST_NYLAS_ID = 'icihsnqh4pwujyqihlrj70vh';
 

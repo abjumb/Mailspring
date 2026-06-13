@@ -851,7 +851,7 @@ export class MorosCalendar extends React.Component<
         hasSelectedEvents={this.state.selectedEvents.length > 0}
       >
         <KeyCommandsRegion
-          className="mailspring-calendar"
+          className="moros-calendar"
           localHandlers={{
             'core:remove-from-view': this._onDeleteSelectedEvents,
             'calendar:move-event-up': () => this._onMoveSelectedEvent('up', false),

@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import networkErrors from 'chromium-net-errors';
 import { localized } from 'moros-exports';
 
-import { rootURLForServer } from '../flux/mailspring-api-request';
+import { rootURLForServer } from '../flux/moros-api-request';
 import { RetinaImg } from './retina-img';
 import { Disposable } from 'event-kit';
 

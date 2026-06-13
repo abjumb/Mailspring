@@ -1,7 +1,7 @@
 import React from 'react';
 import { WorkspaceStore, ComponentRegistry, localized } from 'moros-exports';
 import { QuickEventButton } from './quick-event-button';
-import { MorosCalendar } from './core/mailspring-calendar';
+import { MorosCalendar } from './core/moros-calendar';
 import { EventSearchBar } from './core/event-search-bar';
 
 const Notice = () =>

@@ -6,7 +6,7 @@ import querystring from 'querystring';
 import * as Utils from '../models/utils';
 import * as Actions from '../actions';
 import KeyManager from '../../key-manager';
-import { makeRequest, rootURLForServer } from '../mailspring-api-request';
+import { makeRequest, rootURLForServer } from '../moros-api-request';
 import { Disposable } from 'event-kit';
 import { debounce } from 'underscore';
 

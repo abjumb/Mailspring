@@ -19,7 +19,7 @@ import {
   TICKS_PER_DAY,
   tickGenerator,
 } from './week-view-helpers';
-import { MorosCalendarViewProps } from './mailspring-calendar';
+import { MorosCalendarViewProps } from './moros-calendar';
 import { getEventsWithDragPreview } from './calendar-drag-utils';
 
 const BUFFER_DAYS = 1; // Buffer one day on each side for smooth navigation

@@ -51,7 +51,7 @@ class SystemStartServiceDarwin extends SystemStartServiceBase {
       process.env.HOME,
       'Library',
       'LaunchAgents',
-      'com.mailspring.plist'
+      'com.moros.plist'
     );
     fs.unlink(plistPath, () => {});
   }

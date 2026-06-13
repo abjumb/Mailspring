@@ -253,7 +253,7 @@ const start = () => {
     // into the Start Menu shortcut. Without this, action/reply notification
     // events are silently dropped (COM server is never registered).
     app.setToastActivatorCLSID('{E6AD16B0-2830-48E7-9DB7-439152FA917B}');
-    app.setAppUserModelId('com.squirrel.mailspring.mailspring');
+    app.setAppUserModelId('com.squirrel.moros.moros');
   }
 
   // Set the app name explicitly for Linux to ensure the system tray icon
@@ -281,7 +281,7 @@ const start = () => {
   }
 
   // On Windows, register the AppUserModelId with a display name so notifications
-  // show "Moros" instead of "com.squirrel.mailspring.mailspring".
+  // show "Moros" instead of "com.squirrel.moros.moros".
   // Also register mailto: protocol handler so Windows knows Moros can handle
   // mailto: links (this doesn't make it the default, just registers it as an option).
   // This handles existing installations and ensures registration completes even if

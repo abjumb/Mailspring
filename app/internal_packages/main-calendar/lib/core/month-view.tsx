@@ -1,7 +1,7 @@
 import React from 'react';
 import moment, { Moment } from 'moment-timezone';
 import { InjectedComponentSet } from 'moros-component-kit';
-import { MorosCalendarViewProps } from './mailspring-calendar';
+import { MorosCalendarViewProps } from './moros-calendar';
 import { CalendarEventContainer } from './calendar-event-container';
 import { CalendarView } from './calendar-constants';
 import { HeaderControls } from './header-controls';

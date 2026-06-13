@@ -2,7 +2,7 @@ import React from 'react';
 import moment, { Moment } from 'moment-timezone';
 import { ScrollRegion, InjectedComponentSet } from 'moros-component-kit';
 import { localized, Actions } from 'moros-exports';
-import { MorosCalendarViewProps } from './mailspring-calendar';
+import { MorosCalendarViewProps } from './moros-calendar';
 import { CalendarView } from './calendar-constants';
 import { HeaderControls } from './header-controls';
 import { CalendarEventPopover } from './calendar-event-popover';

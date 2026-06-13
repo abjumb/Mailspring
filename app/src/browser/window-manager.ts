@@ -2,7 +2,7 @@ import _ from 'underscore';
 import { app, BrowserWindow, screen } from 'electron';
 import WindowLauncher from './window-launcher';
 import { localized } from '../intl';
-import MorosWindow from './mailspring-window';
+import MorosWindow from './moros-window';
 
 const MAIN_WINDOW = 'default';
 const SPEC_WINDOW = 'spec';

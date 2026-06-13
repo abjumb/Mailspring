@@ -333,7 +333,7 @@ function buildPackagerOptions() {
     //   CFBundleDisplayName, CFBundleExecutable, CFBundleIdentifier, CFBundleName
     // See https://github.com/electron-userland/electron-packager/blob/master/mac.js#L50
     extendInfo: path.resolve(appDir, 'build', 'resources', 'mac', 'extra.plist'),
-    appBundleId: 'com.mailspring.mailspring',
+    appBundleId: 'com.moros.moros',
     afterCopy: [
       runCopyPlatformSpecificResources,
       runWriteCommitHashIntoPackage,

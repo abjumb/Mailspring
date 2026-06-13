@@ -1,6 +1,6 @@
 import { isWaylandSession } from './is-wayland';
-import MorosWindow from './mailspring-window';
-import { MorosWindowSettings } from './mailspring-window';
+import MorosWindow from './moros-window';
+import { MorosWindowSettings } from './moros-window';
 
 const DEBUG_SHOW_HOT_WINDOW = process.env.SHOW_HOT_WINDOW === 'true';
 let winNum = 0;
@@ -129,7 +129,7 @@ export default class WindowLauncher {
       win.showWhenLoaded();
     }
     // On Wayland, windows are shown via the did-finish-load handler in
-    // mailspring-window.ts (at the point where the Wayland activation token
+    // moros-window.ts (at the point where the Wayland activation token
     // is still valid). We intentionally skip showWhenLoaded() here to avoid
     // a second browserWindow.focus() call at window:loaded time. By that
     // point React has rendered the composer's contenteditable with
