@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { ContactStore, Contact } from 'mailspring-exports';
+import { ContactStore, Contact } from 'moros-exports';
 
-import { ParticipantsTextField } from 'mailspring-component-kit';
+import { ParticipantsTextField } from 'moros-component-kit';
 
 const participant1 = new Contact({
   id: 'local-1',

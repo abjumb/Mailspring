@@ -5,9 +5,9 @@ import {
   ContactGroup,
   ContactBook,
   MutableQuerySubscription,
-} from 'mailspring-exports';
-import MailspringStore from 'mailspring-store';
-import { ListTabular } from 'mailspring-component-kit';
+} from 'moros-exports';
+import MailspringStore from 'moros-store';
+import { ListTabular } from 'moros-component-kit';
 
 class ContactsWindowStore extends MailspringStore {
   _perspective: ContactsPerspective = { type: 'unified' };

@@ -5,8 +5,8 @@ import {
   MailspringAPIRequest,
   Message,
   DraftEditingSession,
-} from 'mailspring-exports';
-import { MetadataComposerToggleButton } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { MetadataComposerToggleButton } from 'moros-component-kit';
 import { PLUGIN_ID, PLUGIN_NAME } from './link-tracking-constants';
 
 type Props = { draft: Message; session: DraftEditingSession };

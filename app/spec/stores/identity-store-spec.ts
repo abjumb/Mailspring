@@ -1,4 +1,4 @@
-import { Utils, KeyManager } from 'mailspring-exports';
+import { Utils, KeyManager } from 'moros-exports';
 import { IdentityStore } from '../../src/flux/stores/identity-store';
 import * as MailspringAPIRequest from '../../src/flux/mailspring-api-request';
 

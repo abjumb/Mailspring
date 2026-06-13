@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import { ChangeUnreadTask } from '../tasks/change-unread-task';
 import { ChangeLabelsTask } from '../tasks/change-labels-task';
 import { ChangeFolderTask } from '../tasks/change-folder-task';

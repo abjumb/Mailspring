@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import * as Actions from '../actions';
 import { Task } from '../tasks/task';
 

@@ -1,7 +1,7 @@
 import Rx from 'rx-lite';
 import React from 'react';
-import MailspringStore from 'mailspring-store';
-import { FeatureUsedUpModal } from 'mailspring-component-kit';
+import MailspringStore from 'moros-store';
+import { FeatureUsedUpModal } from 'moros-component-kit';
 import * as Actions from '../actions';
 import { IdentityStore, EMPTY_FEATURE_USAGE, IIdentity } from './identity-store';
 import { SendFeatureUsageEventTask } from '../tasks/send-feature-usage-event-task';

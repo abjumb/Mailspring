@@ -12,7 +12,7 @@ import {
   AttachmentStore,
   SanitizeTransformer,
   InlineStyleTransformer,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import DraftFactory from '../../src/flux/stores/draft-factory';
 

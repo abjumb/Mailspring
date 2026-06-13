@@ -7,7 +7,7 @@ import {
   CategoryStore,
   TaskFactory,
   MailboxPerspective,
-} from 'mailspring-exports';
+} from 'moros-exports';
 import {
   ToggleStarredButton,
   ToggleUnreadButton,

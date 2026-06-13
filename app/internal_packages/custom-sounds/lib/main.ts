@@ -1,4 +1,4 @@
-import { SoundRegistry } from 'mailspring-exports';
+import { SoundRegistry } from 'moros-exports';
 
 export function activate() {
   SoundRegistry.register('send', 'mailspring://custom-sounds/CUSTOM_UI_Send_v1.ogg');

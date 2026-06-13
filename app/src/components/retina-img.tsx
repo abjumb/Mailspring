@@ -1,6 +1,6 @@
 import _ from 'underscore';
 import React from 'react';
-import { Utils } from 'mailspring-exports';
+import { Utils } from 'moros-exports';
 
 const StylesImpactedByZoom = [
   'top',

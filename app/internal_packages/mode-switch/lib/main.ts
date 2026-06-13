@@ -1,5 +1,5 @@
-import { localized, ComponentRegistry, WorkspaceStore } from 'mailspring-exports';
-import { HasTutorialTip } from 'mailspring-component-kit';
+import { localized, ComponentRegistry, WorkspaceStore } from 'moros-exports';
+import { HasTutorialTip } from 'moros-component-kit';
 
 import ModeToggle from './mode-toggle';
 

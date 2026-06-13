@@ -1,5 +1,5 @@
 import React from 'react';
-import { Utils } from 'mailspring-exports';
+import { Utils } from 'moros-exports';
 import { CalendarEvent } from './calendar-event';
 import { EventOccurrence } from './calendar-data-source';
 import { OverlapByEventId } from './week-view-helpers';

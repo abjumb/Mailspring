@@ -1,5 +1,5 @@
-import { RetinaImg } from 'mailspring-component-kit';
-import { localized, localizedReactFragment, React } from 'mailspring-exports';
+import { RetinaImg } from 'moros-component-kit';
+import { localized, localizedReactFragment, React } from 'moros-exports';
 
 export default class InitialPreferencesPage extends React.Component {
   static displayName = 'InitialPreferencesPage';

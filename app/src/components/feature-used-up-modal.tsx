@@ -1,8 +1,8 @@
 import React from 'react';
 import { shell } from 'electron';
-import { localized } from 'mailspring-exports';
+import { localized } from 'moros-exports';
 import { RetinaImg } from './retina-img';
-import { OpenIdentityPageButton } from 'mailspring-component-kit';
+import { OpenIdentityPageButton } from 'moros-component-kit';
 
 export default class FeatureUsedUpModal extends React.Component<{
   modalClass: string;

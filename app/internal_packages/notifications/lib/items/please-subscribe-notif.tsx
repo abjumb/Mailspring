@@ -1,6 +1,6 @@
 import React from 'react';
-import { localized, Actions, AccountStore, IdentityStore, IIdentity } from 'mailspring-exports';
-import { Notification } from 'mailspring-component-kit';
+import { localized, Actions, AccountStore, IdentityStore, IIdentity } from 'moros-exports';
+import { Notification } from 'moros-component-kit';
 
 export default class PleaseSubscribeNotification extends React.Component<
   Record<string, unknown>,

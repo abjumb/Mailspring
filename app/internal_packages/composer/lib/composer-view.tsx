@@ -8,7 +8,7 @@ import {
   DraftEditingSession,
   MessageWithEditorState,
   File,
-} from 'mailspring-exports';
+} from 'moros-exports';
 import { webUtils } from 'electron';
 import {
   DropZone,
@@ -21,7 +21,7 @@ import {
   ComposerEditorPlaintext,
   ComposerSupport,
   RovingTabIndexToolbar,
-} from 'mailspring-component-kit';
+} from 'moros-component-kit';
 import { ComposerHeader } from './composer-header';
 import { SendActionButton } from './send-action-button';
 import { ActionBarPlugins } from './action-bar-plugins';

@@ -5,7 +5,7 @@ import React from 'react';
 let stubIsRegistered = null;
 let stubRegister: (...args: any[]) => void = () => {};
 const patched = proxyquire('../lib/items/default-client-notif', {
-  'mailspring-exports': {
+  'moros-exports': {
     DefaultClientHelper: class {
       constructor() {
         // The methods are assigned in the constructor (rather than declared as

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageViewExtension, Actions } from 'mailspring-exports';
+import { MessageViewExtension, Actions } from 'moros-exports';
 import LinkTrackingMessagePopover from './link-tracking-message-popover';
 import { PLUGIN_ID } from './link-tracking-constants';
 import { LinkTrackingMetadata } from './types';

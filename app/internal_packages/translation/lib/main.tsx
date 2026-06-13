@@ -6,7 +6,7 @@
 // TranslateButton is a simple React component that allows you to select
 // a language from a popup menu and translates draft text into that language.
 
-import { ComponentRegistry, ExtensionRegistry } from 'mailspring-exports';
+import { ComponentRegistry, ExtensionRegistry } from 'moros-exports';
 import { TranslateComposerButton } from './composer-button';
 import { TranslateMessageHeader, TranslateMessageExtension } from './message-header';
 /*

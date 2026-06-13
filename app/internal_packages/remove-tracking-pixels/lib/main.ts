@@ -4,7 +4,7 @@ import {
   ComposerExtension,
   RegExpUtils,
   Message,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 const TrackingBlacklist = [
   {

@@ -1,5 +1,5 @@
-import { localized, React } from 'mailspring-exports';
-import { Notification } from 'mailspring-component-kit';
+import { localized, React } from 'moros-exports';
+import { Notification } from 'moros-component-kit';
 
 export default class DevModeNotification extends React.Component<
   Record<string, unknown>,

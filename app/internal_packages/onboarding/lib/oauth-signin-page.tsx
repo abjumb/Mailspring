@@ -1,7 +1,7 @@
 import { shell } from 'electron';
 import React from 'react';
-import { localized, localizedReactFragment, Account } from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+import { localized, localizedReactFragment, Account } from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 import http from 'http';
 import url from 'url';
 

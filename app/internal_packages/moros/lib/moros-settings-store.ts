@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import { morosDataDirPath } from './moros-data-store';
 
 const SETTINGS_FILENAME = 'settings.json';

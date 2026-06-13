@@ -12,7 +12,7 @@ import {
   IdentityStore,
   MailspringAPIRequest,
   SearchableComponentStore,
-} from 'mailspring-exports';
+} from 'moros-exports';
 import IFrameSearcher from '../searchable-components/iframe-searcher';
 import url from 'url';
 import _ from 'underscore';

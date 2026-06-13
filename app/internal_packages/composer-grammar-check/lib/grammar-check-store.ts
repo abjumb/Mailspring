@@ -1,5 +1,5 @@
-import MailspringStore from 'mailspring-store';
-import { localized, FeatureUsageStore, IdentityStore } from 'mailspring-exports';
+import MailspringStore from 'moros-store';
+import { localized, FeatureUsageStore, IdentityStore } from 'moros-exports';
 import { GrammarError, LanguageToolBackend, UsageExceededError } from './grammar-check-service';
 
 export const GRAMMAR_CHECK_FEATURE_ID = 'grammar-check';

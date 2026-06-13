@@ -6,7 +6,7 @@ import {
   FeatureUsageStore,
   SyncbackMetadataTask,
   DraftEditingSession,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import { PLUGIN_ID, THREAD_PLUGIN_ID } from './send-reminders-constants';
 

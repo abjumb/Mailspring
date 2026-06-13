@@ -1,4 +1,4 @@
-import { localized, IdentityStore, MailspringAPIRequest } from 'mailspring-exports';
+import { localized, IdentityStore, MailspringAPIRequest } from 'moros-exports';
 import KeyNestStore, { ANTHROPIC_KEY_ENTRY_NAME } from '../keynest/keynest-store';
 
 export type AiProviderId = 'byok' | 'hosted';

@@ -1,7 +1,7 @@
 import { shell } from 'electron';
 import React from 'react';
-import { localized, Thread } from 'mailspring-exports';
-import { RetinaImg, KeyCommandsRegion } from 'mailspring-component-kit';
+import { localized, Thread } from 'moros-exports';
+import { RetinaImg, KeyCommandsRegion } from 'moros-component-kit';
 
 import GithubStore from './github-store';
 

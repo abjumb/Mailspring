@@ -5,9 +5,9 @@ import {
   Message,
   DraftEditingSession,
   FeatureUsageStore,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
-import { Menu, RetinaImg } from 'mailspring-component-kit';
+import { Menu, RetinaImg } from 'moros-component-kit';
 import { TranslatePopupOptions, translateMessageBody, TranslationsUsedLexicon } from './service';
 
 type Props = { draft: Message; session: DraftEditingSession };

@@ -1,6 +1,6 @@
 import React from 'react';
-import { localized, IdentityStore } from 'mailspring-exports';
-import { OpenIdentityPageButton } from 'mailspring-component-kit';
+import { localized, IdentityStore } from 'moros-exports';
+import { OpenIdentityPageButton } from 'moros-component-kit';
 import AiSettingsStore from './ai-settings';
 import { AiProviderId, MODEL_OPTIONS, providerById } from './ai-providers';
 import KeyNestStore, { ANTHROPIC_KEY_ENTRY_NAME } from '../keynest/keynest-store';

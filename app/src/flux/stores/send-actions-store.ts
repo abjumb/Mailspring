@@ -1,5 +1,5 @@
 import _str from 'underscore.string';
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import * as Actions from '../actions';
 import { Message } from '../models/message';
 import { SendDraftTask } from '../tasks/send-draft-task';

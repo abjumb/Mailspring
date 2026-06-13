@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Rx, Thread, DatabaseStore, localized, FeatureUsageStore } from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+import { Rx, Thread, DatabaseStore, localized, FeatureUsageStore } from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 
 import CopyButton from './copy-button';
 import { sharingURLForThread, syncThreadToWeb, unsyncThread } from './main';

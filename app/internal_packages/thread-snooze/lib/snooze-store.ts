@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 
 import {
   localized,
@@ -7,7 +7,7 @@ import {
   Actions,
   DatabaseStore,
   Thread,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import { markUnreadOrResurfaceThreads, moveThreads, snoozedUntilMessage } from './snooze-utils';
 import { PLUGIN_ID } from './snooze-constants';

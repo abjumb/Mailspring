@@ -3,8 +3,8 @@ import _ from 'underscore';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { localized, Utils, RegExpUtils } from 'mailspring-exports';
-import { Menu } from 'mailspring-component-kit';
+import { localized, Utils, RegExpUtils } from 'moros-exports';
+import { Menu } from 'moros-component-kit';
 
 import { RetinaImg } from './retina-img';
 import { KeyCommandsRegion } from './key-commands-region';

@@ -6,7 +6,7 @@ import {
   MailspringAPIRequest,
   RegExpUtils,
   FeatureLexicon,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 export const TranslatePopupOptions = {
   English: 'en',

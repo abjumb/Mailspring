@@ -1,5 +1,5 @@
 import React from 'react';
-import { localized, Account, RegExpUtils } from 'mailspring-exports';
+import { localized, Account, RegExpUtils } from 'moros-exports';
 
 import * as OnboardingActions from './onboarding-actions';
 import CreatePageForForm from './decorators/create-page-for-form';

@@ -2,14 +2,14 @@
 import fs from 'fs';
 import React, { Component } from 'react';
 import { shell, ipcRenderer } from 'electron';
-import { EditableList } from 'mailspring-component-kit';
+import { EditableList } from 'moros-component-kit';
 import {
   localized,
   RegExpUtils,
   KeyManager,
   Account,
   AccountAutoaddress,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 interface AutoaddressControlProps {
   autoaddress: AccountAutoaddress;

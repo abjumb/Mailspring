@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import {
   Actions,
   Account,
@@ -9,7 +9,7 @@ import {
   OutboxStore,
   FocusedPerspectiveStore,
   CategoryStore,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import SidebarSection from './sidebar-section';
 import * as SidebarActions from './sidebar-actions';

@@ -6,8 +6,8 @@ import {
   DatabaseStore,
   Message,
   Actions,
-} from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { PLUGIN_ID } from '../../../internal_packages/send-later/lib/send-later-constants';
 

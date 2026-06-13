@@ -1,4 +1,4 @@
-import { ComponentRegistry, ExtensionRegistry } from 'mailspring-exports';
+import { ComponentRegistry, ExtensionRegistry } from 'moros-exports';
 
 import AutoloadImagesExtension from './autoload-images-extension';
 import AutoloadImagesHeader from './autoload-images-header';

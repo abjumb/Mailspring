@@ -1,6 +1,6 @@
 // Import the function under test directly from the source file.
 // We use a relative path because the plugin is not registered in
-// mailspring-exports.
+// moros-exports.
 import { parseAmountToCents } from '../internal_packages/moros/lib/finance/finance-store';
 
 describe('Moros finance amount parsing', () => {

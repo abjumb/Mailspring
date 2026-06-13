@@ -16,7 +16,7 @@ import {
   EmlUtils,
   SearchableComponentStore,
   SearchableComponentMaker,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import {
   Spinner,
@@ -27,7 +27,7 @@ import {
   MailImportantIcon,
   KeyCommandsRegion,
   InjectedComponentSet,
-} from 'mailspring-component-kit';
+} from 'moros-component-kit';
 
 import FindInThread from './find-in-thread';
 import MessageItemContainer from './message-item-container';

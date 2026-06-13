@@ -1,7 +1,7 @@
-import { imapUtf7 } from 'mailspring-exports';
+import { imapUtf7 } from 'moros-exports';
 
 import _str from 'underscore.string';
-import { OutlineViewItem } from 'mailspring-component-kit';
+import { OutlineViewItem } from 'moros-component-kit';
 import {
   MailboxPerspective,
   FocusedPerspectiveStore,
@@ -12,7 +12,7 @@ import {
   Actions,
   RegExpUtils,
   localized,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import * as SidebarActions from './sidebar-actions';
 import { ISidebarItem } from './types';

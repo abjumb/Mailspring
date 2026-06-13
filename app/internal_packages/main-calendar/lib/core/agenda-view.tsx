@@ -1,7 +1,7 @@
 import React from 'react';
 import moment, { Moment } from 'moment-timezone';
-import { ScrollRegion, InjectedComponentSet } from 'mailspring-component-kit';
-import { localized, Actions } from 'mailspring-exports';
+import { ScrollRegion, InjectedComponentSet } from 'moros-component-kit';
+import { localized, Actions } from 'moros-exports';
 import { MailspringCalendarViewProps } from './mailspring-calendar';
 import { CalendarView } from './calendar-constants';
 import { HeaderControls } from './header-controls';

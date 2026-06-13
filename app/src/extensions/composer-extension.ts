@@ -1,4 +1,4 @@
-import { Message, Contact } from 'mailspring-exports';
+import { Message, Contact } from 'moros-exports';
 
 /*
  * decaffeinate suggestions:

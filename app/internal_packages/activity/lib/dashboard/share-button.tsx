@@ -1,6 +1,6 @@
 import React from 'react';
-import { localized, MailspringAPIRequest } from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+import { localized, MailspringAPIRequest } from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 
 function buildShareHTML(htmlEl: HTMLElement, styleEl: HTMLStyleElement) {
   return `

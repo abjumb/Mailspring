@@ -9,10 +9,10 @@ import {
   MessageBodyProcessor,
   IdentityStore,
   FeatureUsageStore,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import { translateMessageBody, AllLanguages, TranslationsUsedLexicon } from './service';
-import { Menu, ButtonDropdown, RetinaImg } from 'mailspring-component-kit';
+import { Menu, ButtonDropdown, RetinaImg } from 'moros-component-kit';
 
 interface TranslateMessageHeaderProps {
   message: Message;

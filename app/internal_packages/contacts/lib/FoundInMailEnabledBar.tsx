@@ -1,6 +1,6 @@
 import React from 'react';
-import { ListensToFluxStore } from 'mailspring-component-kit';
-import { localized } from 'mailspring-exports';
+import { ListensToFluxStore } from 'moros-component-kit';
+import { localized } from 'moros-exports';
 
 import { Store, ContactsPerspective } from './Store';
 

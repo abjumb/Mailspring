@@ -1,5 +1,5 @@
-import { localized, Actions, AccountStore } from 'mailspring-exports';
-import MailspringStore from 'mailspring-store';
+import { localized, Actions, AccountStore } from 'moros-exports';
+import MailspringStore from 'moros-store';
 import _ from 'underscore';
 
 export interface IDefaultSignatures {

@@ -10,7 +10,7 @@ import {
   TaskFactory,
   MailboxPerspective,
   Actions,
-} from 'mailspring-exports';
+} from 'moros-exports';
 import SearchQuerySubscription from './search-query-subscription';
 
 class SearchMailboxPerspective extends MailboxPerspective {

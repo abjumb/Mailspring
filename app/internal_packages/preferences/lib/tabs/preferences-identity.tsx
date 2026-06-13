@@ -5,8 +5,8 @@ import {
   localized,
   localizedReactFragment,
   IIdentity,
-} from 'mailspring-exports';
-import { OpenIdentityPageButton, RetinaImg } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { OpenIdentityPageButton, RetinaImg } from 'moros-component-kit';
 import { shell, ipcRenderer } from 'electron';
 
 class RefreshButton extends React.Component<Record<string, unknown>, { refreshing: boolean }> {

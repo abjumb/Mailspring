@@ -3,7 +3,7 @@ import { shell } from 'electron';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 import networkErrors from 'chromium-net-errors';
-import { localized } from 'mailspring-exports';
+import { localized } from 'moros-exports';
 
 import { rootURLForServer } from '../flux/mailspring-api-request';
 import { RetinaImg } from './retina-img';

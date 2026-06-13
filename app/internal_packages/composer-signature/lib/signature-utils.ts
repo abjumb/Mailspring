@@ -1,4 +1,4 @@
-import { RegExpUtils } from 'mailspring-exports';
+import { RegExpUtils } from 'moros-exports';
 import { Value } from 'slate';
 
 function numberOfTrailingBRs(text: string) {

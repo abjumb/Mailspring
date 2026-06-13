@@ -1,7 +1,7 @@
 import React from 'react';
 import { webUtils } from 'electron';
-import { localized, MailspringAPIRequest, IdentityStore } from 'mailspring-exports';
-import { RetinaImg, DropZone } from 'mailspring-component-kit';
+import { localized, MailspringAPIRequest, IdentityStore } from 'moros-exports';
+import { RetinaImg, DropZone } from 'moros-component-kit';
 
 const MAX_IMAGE_RES = 250;
 

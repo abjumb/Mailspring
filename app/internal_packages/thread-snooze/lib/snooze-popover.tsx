@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Moment } from 'moment';
-import { localized, DateUtils, Actions, Thread } from 'mailspring-exports';
-import { RetinaImg, DateInput } from 'mailspring-component-kit';
+import { localized, DateUtils, Actions, Thread } from 'moros-exports';
+import { RetinaImg, DateInput } from 'moros-component-kit';
 import * as SnoozeActions from './snooze-actions';
 
 const { DATE_FORMAT_LONG } = DateUtils;

@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import { SendDraftTask } from '../tasks/send-draft-task';
 import { SyncbackDraftTask } from '../tasks/syncback-draft-task';
 import TaskQueue from './task-queue';

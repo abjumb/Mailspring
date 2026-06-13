@@ -10,7 +10,7 @@ import os from 'os';
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import { localized } from './intl';
-import { IIdentity, Account } from 'mailspring-exports';
+import { IIdentity, Account } from 'moros-exports';
 
 import {
   GMAIL_CLIENT_ID,
@@ -402,7 +402,7 @@ export class MailsyncProcess extends EventEmitter {
 
   sendMessage(json) {
     if (!Utils) {
-      Utils = require('mailspring-exports').Utils;
+      Utils = require('moros-exports').Utils;
     }
     console.log(`Sending to mailsync ${this.account ? this.account.id : '?'}`, json);
     const msg = `${JSON.stringify(json)}\n`;

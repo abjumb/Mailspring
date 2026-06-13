@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import React from 'react';
-import { RetinaImg, Flexbox } from 'mailspring-component-kit';
-import { IdentityStore, localized, MailspringAPIRequest } from 'mailspring-exports';
+import { RetinaImg, Flexbox } from 'moros-component-kit';
+import { IdentityStore, localized, MailspringAPIRequest } from 'moros-exports';
 
 interface NewsletterSignupProps {
   name: string;

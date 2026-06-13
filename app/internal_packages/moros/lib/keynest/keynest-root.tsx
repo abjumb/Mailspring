@@ -1,6 +1,6 @@
 import React from 'react';
 import { clipboard } from 'electron';
-import { localized } from 'mailspring-exports';
+import { localized } from 'moros-exports';
 import KeyNestStore, { KeyNestEntry, KeyNestEntryKind, expiryState } from './keynest-store';
 import {
   GeneratorOptions,

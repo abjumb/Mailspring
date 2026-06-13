@@ -1,5 +1,5 @@
-import MailspringStore from 'mailspring-store';
-import { DatabaseStore, Message, localized } from 'mailspring-exports';
+import MailspringStore from 'moros-store';
+import { DatabaseStore, Message, localized } from 'moros-exports';
 import MorosDataStore, { MorosRecord } from '../moros-data-store';
 import AiSettingsStore from '../ai/ai-settings';
 import { AiProviderId, providerById, sanitizeForPrompt } from '../ai/ai-providers';

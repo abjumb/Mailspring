@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 
 import url from 'url';
 import querystring from 'querystring';

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import React from 'react';
 
 import { calcColor } from './calendar-helpers';
-import { Calendar, Account } from 'mailspring-exports';
+import { Calendar, Account } from 'moros-exports';
 
 const DISABLED_CALENDARS = 'mailspring.disabledCalendars';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WorkspaceStore, ComponentRegistry, localized } from 'mailspring-exports';
+import { WorkspaceStore, ComponentRegistry, localized } from 'moros-exports';
 import { QuickEventButton } from './quick-event-button';
 import { MailspringCalendar } from './core/mailspring-calendar';
 import { EventSearchBar } from './core/event-search-bar';

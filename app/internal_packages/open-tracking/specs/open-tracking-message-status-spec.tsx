@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Message, MailspringTestUtils } from 'mailspring-exports';
+import { Message, MailspringTestUtils } from 'moros-exports';
 import OpenTrackingMessageStatus from '../lib/open-tracking-message-status';
 import { PLUGIN_ID } from '../lib/open-tracking-constants';
 

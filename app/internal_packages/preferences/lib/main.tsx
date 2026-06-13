@@ -4,7 +4,7 @@ import {
   PreferencesUIStore,
   WorkspaceStore,
   ComponentRegistry,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import PreferencesRoot from './preferences-root';
 

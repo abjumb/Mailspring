@@ -2,7 +2,7 @@
 import * as Attributes from '../attributes';
 import { ModelWithMetadata } from './model-with-metadata';
 import { AttributeValues } from './model';
-import { MailsyncProcessExit } from 'mailspring-exports';
+import { MailsyncProcessExit } from 'moros-exports';
 
 let CategoryStore = null;
 let Contact = null;

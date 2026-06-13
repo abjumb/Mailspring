@@ -1,5 +1,5 @@
 import { localized } from './intl';
-import { Account } from 'mailspring-exports';
+import { Account } from 'moros-exports';
 
 interface KeySet {
   [key: string]: string;

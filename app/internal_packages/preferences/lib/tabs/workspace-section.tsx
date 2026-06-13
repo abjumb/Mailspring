@@ -1,5 +1,5 @@
 import React from 'react';
-import { localized, DefaultClientHelper, SystemStartService } from 'mailspring-exports';
+import { localized, DefaultClientHelper, SystemStartService } from 'moros-exports';
 import { shell } from 'electron';
 
 import ConfigSchemaItem from './config-schema-item';

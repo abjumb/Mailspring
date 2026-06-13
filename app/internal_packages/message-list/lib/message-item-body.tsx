@@ -8,8 +8,8 @@ import {
   QuotedHTMLTransformer,
   AttachmentStore,
   Message,
-} from 'mailspring-exports';
-import { InjectedComponentSet, RetinaImg } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { InjectedComponentSet, RetinaImg } from 'moros-component-kit';
 
 import EmailFrame from './email-frame';
 import { BrowserWindow } from '@electron/remote';

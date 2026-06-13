@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import MailspringStore from 'mailspring-store';
-import { Rx } from 'mailspring-exports';
+import MailspringStore from 'moros-store';
+import { Rx } from 'moros-exports';
 import { Task } from '../tasks/task';
 import DatabaseStore from './database-store';
 

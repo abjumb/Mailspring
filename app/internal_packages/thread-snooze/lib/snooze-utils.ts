@@ -11,7 +11,7 @@ import {
   DraftFactory,
   SendDraftTask,
   Thread,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 export function snoozedUntilMessage(snoozeDate: string | null, now: Moment = moment()) {
   let message = localized('Snoozed');

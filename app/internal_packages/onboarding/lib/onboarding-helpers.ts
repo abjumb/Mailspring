@@ -8,7 +8,7 @@ import {
   IdentityStore,
   MailsyncProcess,
   localized,
-} from 'mailspring-exports';
+} from 'moros-exports';
 import MailspringProviderSettings from './mailspring-provider-settings.json';
 import MailcoreProviderSettings from './mailcore-provider-settings.json';
 import dns from 'dns';

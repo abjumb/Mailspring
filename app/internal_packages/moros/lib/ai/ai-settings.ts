@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import { AiProviderId, DEFAULT_MODEL } from './ai-providers';
 
 export interface AiSettings {

@@ -13,8 +13,8 @@
 //   MailspringTestUtils,
 //   AccountStore,
 //   ComponentRegistry,
-// } = require('mailspring-exports');
-// import { ListTabular } from 'mailspring-component-kit';;
+// } = require('moros-exports');
+// import { ListTabular } from 'moros-component-kit';;
 
 // const ThreadStore = require('../lib/thread-store');
 // const ThreadList = require('../lib/thread-list');

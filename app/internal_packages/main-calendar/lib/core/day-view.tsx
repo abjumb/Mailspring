@@ -2,7 +2,7 @@
 import moment, { Moment } from 'moment-timezone';
 import classnames from 'classnames';
 import React from 'react';
-import { ScrollRegion, InjectedComponentSet } from 'mailspring-component-kit';
+import { ScrollRegion, InjectedComponentSet } from 'moros-component-kit';
 import { HeaderControls } from './header-controls';
 import { EventOccurrence } from './calendar-data-source';
 import { EventGridBackground } from './event-grid-background';

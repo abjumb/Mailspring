@@ -14,9 +14,9 @@ import {
   MailboxPerspective,
   MailspringTestUtils,
   TaskQueue,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
-import { Categories } from 'mailspring-observables';
+import { Categories } from 'moros-observables';
 
 describe('MovePickerPopover', function () {
   beforeEach(() => (CategoryStore._categoryCache = {}));

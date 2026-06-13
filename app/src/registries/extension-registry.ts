@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 
 export class Registry extends MailspringStore {
   name: string;

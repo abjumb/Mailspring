@@ -1,4 +1,4 @@
-import { MailspringAPIRequest } from 'mailspring-exports';
+import { MailspringAPIRequest } from 'moros-exports';
 
 export interface GrammarError {
   offset: number;

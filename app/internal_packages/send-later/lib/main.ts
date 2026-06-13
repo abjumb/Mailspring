@@ -7,8 +7,8 @@ import {
   SendActionsStore,
   Actions,
   localized,
-} from 'mailspring-exports';
-import { HasTutorialTip } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { HasTutorialTip } from 'moros-component-kit';
 
 import SendLaterButton from './send-later-button';
 import SendLaterStatus from './send-later-status';

@@ -1,4 +1,4 @@
-import { MailspringAPIRequest, Utils } from 'mailspring-exports';
+import { MailspringAPIRequest, Utils } from 'moros-exports';
 const { makeRequest } = MailspringAPIRequest;
 
 const CACHE_SIZE = 200;

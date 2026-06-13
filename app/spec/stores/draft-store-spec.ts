@@ -11,7 +11,7 @@ import {
   ComposerExtension,
   ExtensionRegistry,
   FocusedContentStore,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import DraftFactory from '../../src/flux/stores/draft-factory';
 

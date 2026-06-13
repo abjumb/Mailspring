@@ -1,7 +1,7 @@
 import React from 'react';
 import qs from 'querystring';
-import { MailspringAPIRequest, IdentityAuthResponse } from 'mailspring-exports';
-import { Webview } from 'mailspring-component-kit';
+import { MailspringAPIRequest, IdentityAuthResponse } from 'moros-exports';
+import { Webview } from 'moros-component-kit';
 import * as OnboardingActions from './onboarding-actions';
 
 export default class AuthenticatePage extends React.Component<{ account?: object }> {

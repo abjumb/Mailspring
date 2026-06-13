@@ -1,5 +1,5 @@
-import { localized, Actions, ComponentRegistry, GrammarCheckPluginAPI } from 'mailspring-exports';
-import { HasTutorialTip } from 'mailspring-component-kit';
+import { localized, Actions, ComponentRegistry, GrammarCheckPluginAPI } from 'moros-exports';
+import { HasTutorialTip } from 'moros-component-kit';
 import { GrammarCheckToggle } from './grammar-check-toggle';
 import { GrammarCheckStore } from './grammar-check-store';
 

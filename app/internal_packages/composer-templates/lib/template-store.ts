@@ -6,9 +6,9 @@ import {
   Actions,
   QuotedHTMLTransformer,
   RegExpUtils,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import path from 'path';
 import fs from 'fs';
 

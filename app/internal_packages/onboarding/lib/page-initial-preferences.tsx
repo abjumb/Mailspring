@@ -1,8 +1,8 @@
 import React from 'react';
 import path from 'path';
 import fs from 'fs';
-import { RetinaImg, Flexbox, ConfigPropContainer } from 'mailspring-component-kit';
-import { localized, AccountStore, IdentityStore, Account } from 'mailspring-exports';
+import { RetinaImg, Flexbox, ConfigPropContainer } from 'moros-component-kit';
+import { localized, AccountStore, IdentityStore, Account } from 'moros-exports';
 import * as OnboardingActions from './onboarding-actions';
 import NewsletterSignup from './newsletter-signup';
 

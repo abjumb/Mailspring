@@ -1,6 +1,6 @@
 import React from 'react';
-import { Thread } from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+import { Thread } from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 
 const StaticEmptyIndicator = <div className="personal-level-icon" />;
 

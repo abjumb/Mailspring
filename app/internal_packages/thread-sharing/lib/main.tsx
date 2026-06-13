@@ -11,7 +11,7 @@ import {
   QuotedHTMLTransformer,
   ComponentRegistry,
   DatabaseChangeRecord,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import plugin from '../package.json';
 import ThreadSharingButton from './thread-sharing-button';

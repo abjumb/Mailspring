@@ -6,8 +6,8 @@ import {
   Thread,
   DraftFactory,
   DatabaseChangeRecord,
-} from 'mailspring-exports';
-import MailspringStore from 'mailspring-store';
+} from 'moros-exports';
+import MailspringStore from 'moros-store';
 
 import { PLUGIN_ID } from './send-reminders-constants';
 import { updateReminderMetadata } from './send-reminders-utils';

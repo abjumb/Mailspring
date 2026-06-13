@@ -12,13 +12,13 @@ import {
   Event,
   SyncbackEventTask,
   ICSEventHelpers,
-} from 'mailspring-exports';
+} from 'moros-exports';
 import {
   ScrollRegion,
   ResizableRegion,
   KeyCommandsRegion,
   MiniMonthView,
-} from 'mailspring-component-kit';
+} from 'moros-component-kit';
 import { CalendarMenuCommands } from '../calendar-menu-commands';
 import { DayView } from './day-view';
 import { WeekView } from './week-view';

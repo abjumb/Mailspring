@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import { Editor, Value, Block } from 'slate';
 
 import RegExpUtils from '../../regexp-utils';

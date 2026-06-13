@@ -6,8 +6,8 @@ import {
   FeatureUsageStore,
   Message,
   DraftEditingSession,
-} from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 import classnames from 'classnames';
 import _ from 'underscore';
 

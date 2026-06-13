@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ExtensionRegistry, MessageStore } from 'mailspring-exports';
+import { ExtensionRegistry, MessageStore } from 'moros-exports';
 import ScreenshotModeMessageExtension from './screenshot-mode-message-extension';
 
 let enabled = false;

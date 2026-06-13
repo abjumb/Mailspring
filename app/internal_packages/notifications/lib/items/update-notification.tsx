@@ -1,6 +1,6 @@
-import { localized, React } from 'mailspring-exports';
+import { localized, React } from 'moros-exports';
 import { ipcRenderer, shell } from 'electron';
-import { Notification } from 'mailspring-component-kit';
+import { Notification } from 'moros-component-kit';
 import { Disposable } from 'event-kit';
 
 interface UpdateNotificationState {

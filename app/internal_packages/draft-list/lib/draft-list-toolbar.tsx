@@ -3,10 +3,10 @@ import {
   ListensToObservable,
   MultiselectToolbar,
   InjectedComponentSet,
-} from 'mailspring-component-kit';
+} from 'moros-component-kit';
 
 import DraftListStore from './draft-list-store';
-import { Message } from 'mailspring-exports';
+import { Message } from 'moros-exports';
 
 function getObservable() {
   return DraftListStore.selectionObservable();

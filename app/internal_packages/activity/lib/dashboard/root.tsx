@@ -1,7 +1,7 @@
 import fs from 'fs';
 import React from 'react';
 import { shell } from 'electron';
-import { ScrollRegion, ListensToFluxStore, RetinaImg } from 'mailspring-component-kit';
+import { ScrollRegion, ListensToFluxStore, RetinaImg } from 'moros-component-kit';
 import {
   localized,
   localizedReactFragment,
@@ -10,7 +10,7 @@ import {
   DatabaseStore,
   FocusedPerspectiveStore,
   Actions,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 import {
   MetricContainer,

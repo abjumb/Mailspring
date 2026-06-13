@@ -5,8 +5,8 @@ import {
   DraftEditingSession,
   GrammarCheckPluginAPI,
   FeatureUsageStore,
-} from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 import {
   GrammarCheckStore,
   GRAMMAR_CHECK_FEATURE_ID,

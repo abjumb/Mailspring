@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Flexbox } from 'mailspring-component-kit';
-import { localized } from 'mailspring-exports';
+import { Flexbox } from 'moros-component-kit';
+import { localized } from 'moros-exports';
 import fs from 'fs';
 
 import { keyAndModifiersForEvent } from './mousetrap-keybinding-helpers';

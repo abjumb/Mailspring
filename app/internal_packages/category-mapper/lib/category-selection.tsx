@@ -4,8 +4,8 @@ import {
   DropdownMenu,
   LabelColorizer,
   BoldedSearchResult,
-} from 'mailspring-component-kit';
-import { localized, Label, Utils, imapUtf7 } from 'mailspring-exports';
+} from 'moros-component-kit';
+import { localized, Label, Utils, imapUtf7 } from 'moros-exports';
 
 interface CategorySelectionProps {
   allowLabels: boolean;

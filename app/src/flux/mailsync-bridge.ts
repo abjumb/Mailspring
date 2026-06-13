@@ -18,7 +18,7 @@ import { MailsyncProcess, MailsyncProcessExit } from '../mailsync-process';
 import KeyManager from '../key-manager';
 import * as Actions from './actions';
 import * as Utils from './models/utils';
-import { Model } from 'mailspring-exports';
+import { Model } from 'moros-exports';
 
 const MAX_CRASH_HISTORY = 10;
 

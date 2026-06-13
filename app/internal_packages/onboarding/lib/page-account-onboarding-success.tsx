@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { localized, Account } from 'mailspring-exports';
-import { RetinaImg } from 'mailspring-component-kit';
+import { localized, Account } from 'moros-exports';
+import { RetinaImg } from 'moros-component-kit';
 import AccountProviders from './account-providers';
 
 class AccountOnboardingSuccess extends Component<{ account: Account }> {

@@ -1,4 +1,4 @@
-import { localized, React } from 'mailspring-exports';
+import { localized, React } from 'moros-exports';
 import * as OnboardingActions from './onboarding-actions';
 
 const Steps = [

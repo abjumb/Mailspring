@@ -3,8 +3,8 @@ import _ from 'underscore';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { localized, Actions, WorkspaceStore, DOMUtils } from 'mailspring-exports';
-import MailspringStore from 'mailspring-store';
+import { localized, Actions, WorkspaceStore, DOMUtils } from 'moros-exports';
+import MailspringStore from 'moros-store';
 import { Disposable } from 'event-kit';
 
 const TipsBackgroundEl = document.createElement('tutorial-tip-background');

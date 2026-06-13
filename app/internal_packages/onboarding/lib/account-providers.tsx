@@ -1,4 +1,4 @@
-import { localized, localizedReactFragment, React } from 'mailspring-exports';
+import { localized, localizedReactFragment, React } from 'moros-exports';
 
 const AccountProviders = [
   {

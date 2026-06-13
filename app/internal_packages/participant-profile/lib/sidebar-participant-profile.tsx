@@ -8,8 +8,8 @@ import {
   RegExpUtils,
   Thread,
   Utils,
-} from 'mailspring-exports';
-import { RetinaImg, ContactProfilePhoto } from 'mailspring-component-kit';
+} from 'moros-exports';
+import { RetinaImg, ContactProfilePhoto } from 'moros-component-kit';
 import moment from 'moment-timezone';
 
 import ParticipantProfileDataSource from './participant-profile-data-source';

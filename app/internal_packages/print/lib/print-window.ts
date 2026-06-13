@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { pathToFileURL } from 'url';
 
-import { localized } from 'mailspring-exports';
+import { localized } from 'moros-exports';
 import { escapeHTML } from 'underscore.string';
 
 const { app, BrowserWindow, dialog } = require('@electron/remote');

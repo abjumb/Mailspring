@@ -1,7 +1,7 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import fs from 'fs';
 import path from 'path';
-import { Utils, Message, MessageBodyProcessor, CategoryStore } from 'mailspring-exports';
+import { Utils, Message, MessageBodyProcessor, CategoryStore } from 'moros-exports';
 import * as AutoloadImagesActions from './autoload-images-actions';
 
 class AutoloadImagesStore extends MailspringStore {

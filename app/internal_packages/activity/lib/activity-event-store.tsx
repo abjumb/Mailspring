@@ -1,4 +1,4 @@
-import MailspringStore from 'mailspring-store';
+import MailspringStore from 'moros-store';
 import {
   localized,
   Actions,
@@ -8,7 +8,7 @@ import {
   DatabaseStore,
   NativeNotifications,
   FocusedPerspectiveStore,
-} from 'mailspring-exports';
+} from 'moros-exports';
 
 interface ActivityAction {
   messageId: string;
