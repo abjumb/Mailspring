@@ -82,6 +82,31 @@ describe('Moros subscription AI classification', () => {
     expect(refined[0].vendorEmail).toBe('billing@netflix.com');
     expect(refined[0].amountCents).toBe(1549);
     expect(refined[0].cadence).toBe('monthly');
+    expect(refined[0].category).toBe('Streaming');
+  });
+
+  it('propagates a valid category and ignores an invalid one', () => {
+    expect(
+      parseClassificationResponse('[{"index": 0, "category": "Software"}]', candidates)[0].category
+    ).toBe('Software');
+    // Not in SUBSCRIPTION_CATEGORIES → falls back to the original (unset here).
+    expect(
+      parseClassificationResponse('[{"index": 0, "category": "Nonsense"}]', candidates)[0].category
+    ).toBeUndefined();
+  });
+
+  it('extracts the array even when the model appends prose containing brackets', () => {
+    const response = '[{"index": 0}] (I excluded item[1] because it was a one-off)';
+    const refined = parseClassificationResponse(response, candidates);
+    expect(refined.length).toBe(1);
+    expect(refined[0].vendorEmail).toBe('billing@netflix.com');
+  });
+
+  it('does not treat a bracket inside a string value as the array end', () => {
+    const response = '[{"index": 0, "name": "Acme [Pro]"}]';
+    const refined = parseClassificationResponse(response, candidates);
+    expect(refined.length).toBe(1);
+    expect(refined[0].name).toBe('Acme [Pro]');
   });
 
   it('never trusts a model-supplied vendor email', () => {

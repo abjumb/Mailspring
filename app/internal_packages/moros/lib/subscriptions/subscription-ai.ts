@@ -56,11 +56,39 @@ interface RawClassification {
   amountCents?: unknown;
 }
 
-/** Extract the first top-level JSON array from a model response. */
+/**
+ * Extract the first top-level JSON array from a model response. Walks from the
+ * opening bracket tracking depth (skipping over string literals, so brackets
+ * inside values don't confuse it) to find the matching close bracket — robust
+ * against trailing prose the model may append after the JSON, e.g.
+ * `[{...}] (I excluded item[1] as a one-off)`.
+ */
 function extractJsonArray(text: string): unknown {
   const start = text.indexOf('[');
-  const end = text.lastIndexOf(']');
-  if (start === -1 || end === -1 || end < start) return null;
+  if (start === -1) return null;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  let end = -1;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === '[') depth++;
+    else if (ch === ']') {
+      depth--;
+      if (depth === 0) {
+        end = i;
+        break;
+      }
+    }
+  }
+  if (end === -1) return null;
   try {
     return JSON.parse(text.slice(start, end + 1));
   } catch (err) {
@@ -103,6 +131,11 @@ export function parseClassificationResponse(
       typeof item.cadence === 'string' && (CADENCES as string[]).includes(item.cadence)
         ? (item.cadence as SubscriptionCadence)
         : original.cadence;
+    const category =
+      typeof item.category === 'string' &&
+      (SUBSCRIPTION_CATEGORIES as string[]).includes(item.category)
+        ? item.category
+        : original.category;
     let amountCents: number | null = original.amountCents;
     if (item.amountCents === null) {
       amountCents = null;
@@ -115,6 +148,7 @@ export function parseClassificationResponse(
       vendorEmail: original.vendorEmail, // never trust the model for this
       amountCents,
       cadence,
+      category,
     });
   }
   return results;

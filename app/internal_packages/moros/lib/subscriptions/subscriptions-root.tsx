@@ -115,9 +115,13 @@ export default class SubscriptionsRoot extends React.Component<
       });
       return;
     }
+    // Snapshot the candidates before any await — `_onScan` could otherwise
+    // replace this.state.suggestions mid-flight, skewing the count and
+    // overwriting fresh results.
+    const original = this.state.suggestions;
     this.setState({ refining: true, aiNotice: null });
     try {
-      const refined = await classifyCandidates(provider, this.state.suggestions, { model });
+      const refined = await classifyCandidates(provider, original, { model });
       if (!this._mounted) return;
       this.setState({
         suggestions: refined,
@@ -125,7 +129,7 @@ export default class SubscriptionsRoot extends React.Component<
         aiNotice: localized(
           'AI kept %@ of %@ detected charges.',
           `${refined.length}`,
-          `${this.state.suggestions.length}`
+          `${original.length}`
         ),
       });
     } catch (err) {
@@ -145,7 +149,7 @@ export default class SubscriptionsRoot extends React.Component<
       amountCents: candidate.amountCents || 0,
       cadence: candidate.cadence,
       nextRenewal: '',
-      category: SUBSCRIPTION_CATEGORIES[0],
+      category: candidate.category || SUBSCRIPTION_CATEGORIES[0],
       status: 'active',
       source: 'detected',
     });
