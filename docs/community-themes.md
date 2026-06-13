@@ -112,7 +112,7 @@ The `package.json` should include:
   "theme": "ui",
   "version": "1.0.0",
   "engines": {
-    "mailspring": "*"
+    "moros": "*"
   }
 }
 ```

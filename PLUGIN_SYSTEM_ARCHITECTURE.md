@@ -83,7 +83,7 @@ my-plugin/
   "license": "GPL-3.0",
 
   "engines": {
-    "mailspring": "*"
+    "moros": "*"
   },
 
   "windowTypes": {
@@ -109,7 +109,7 @@ my-plugin/
 | `name` | Yes | Package identifier (kebab-case) |
 | `version` | Yes | Semantic version |
 | `main` | Yes* | Entry point path (required for non-theme plugins) |
-| `engines.mailspring` | Yes | **Required for validation** - target engine version |
+| `engines.moros` | Yes | **Required for validation** - target engine version |
 | `displayName` | No | Human-readable name for UI |
 | `description` | No | Plugin description |
 | `windowTypes` | No | Which window types load this plugin |
@@ -193,7 +193,7 @@ export function activateConfig() {
 
 1. **Discovery**: `PackageManager.discoverPackages()` scans configured directories
 2. **Filtering**: Packages filtered by `windowTypes` for current window
-3. **Validation**: Checks for valid `package.json` with `engines.mailspring`
+3. **Validation**: Checks for valid `package.json` with `engines.moros`
 4. **Sync Loading**: Plugins with `syncInit: true` activate immediately
 5. **Delayed Loading**: Other plugins activate after 2.5 second delay
 6. **Resource Loading**: Keymaps, stylesheets, menus auto-loaded
@@ -218,7 +218,7 @@ activatePackage(pkg)
     ├── Skip if theme (handled separately)
     ├── Skip if optional and disabled in config
     ├── Skip if identity required but not present
-    ├── Verify engines.mailspring is set
+    ├── Verify engines.moros is set
     │
     ├── Mark as active
     └── Call pkg.activate()
@@ -311,7 +311,7 @@ class MyComposerExtension extends ComposerExtension {
   static sendActions() {
     return [{
       title: 'Send Later',
-      iconUrl: 'mailspring://my-plugin/assets/clock.png',
+      iconUrl: 'moros://my-plugin/assets/clock.png',
       isEnabled: ({ draft }) => true,
       performSendAction: ({ draft }) => { /* ... */ }
     }];
@@ -394,7 +394,7 @@ AppEnv.packages.createPackageManually();
 ### Validation Requirements
 
 - Must have `package.json` file
-- Must have `engines.mailspring` field
+- Must have `engines.moros` field
 - Main entry point must exist (for non-themes)
 
 ---
@@ -408,7 +408,7 @@ Themes are plugins with special handling:
   "name": "my-theme",
   "theme": "ui",
   "displayName": "My Theme",
-  "engines": { "mailspring": "*" }
+  "engines": { "moros": "*" }
 }
 ```
 
@@ -440,7 +440,7 @@ Located in `internal_packages/theme-picker/`:
 | No enable/disable UI | Plugins require config file editing (themes have UI) |
 | No update mechanism | Manual updates only |
 | No sandboxing | Plugins have full API access |
-| Limited version checking | `engines.mailspring: "*"` is common |
+| Limited version checking | `engines.moros: "*"` is common |
 
 ### Disabled Plugins Configuration
 

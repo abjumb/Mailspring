@@ -90,7 +90,7 @@ Moros,install dependencies, and launch the app:
 
 ```
 git clone https://github.com/foundry376/mailspring
-cd mailspring
+cd moros-pdmt
 npm install
 npm start
 ```

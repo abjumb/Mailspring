@@ -44,7 +44,7 @@ When working on plugin functionality, these are the primary files to understand:
 
 ## Development Guidelines
 
-1. **Plugin Validation**: All plugins must have `engines.mailspring` in package.json
+1. **Plugin Validation**: All plugins must have `engines.moros` in package.json
 2. **Lifecycle Compliance**: Plugins must export `activate()` and `deactivate()` functions
 3. **Clean Deactivation**: Always unregister components/extensions in `deactivate()`
 4. **Window Types**: Consider which window types a plugin should load in
