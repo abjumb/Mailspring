@@ -423,15 +423,29 @@ async function createMacDmg() {
   // Style the Finder window (icon positions + background). Best-effort: a
   // headless CI runner without Finder access still yields a fully functional
   // drag-to-install DMG, so failures here are non-fatal.
-  const mountPoint = path.join('/Volumes', volName);
+  //
+  // The actual device node and mount point are parsed from `hdiutil attach`
+  // output rather than assumed to be /Volumes/<volName>: if a volume of that
+  // name is already mounted, the OS mounts this image at "<volName> 1", and
+  // detaching the wrong path would leave the temp image attached and make the
+  // later `hdiutil convert` fail with a "resource busy" error. We detach by
+  // device node (always unambiguous) in the finally block.
+  let device = null;
   try {
-    await spawn({
+    const attach = await spawn({
       cmd: 'hdiutil',
       args: ['attach', tmpDmgPath, '-readwrite', '-noverify', '-noautoopen'],
     });
+    // Output rows are "<dev node>\t<type>\t<mount point>"; the app volume is
+    // the row that actually has a mount point under /Volumes.
+    const mountRow = attach.stdout.split('\n').find(line => line.includes('/Volumes/'));
+    device = attach.stdout.trim().split('\n')[0].split(/\s+/)[0];
+    const mountedVol = mountRow
+      ? path.basename(mountRow.slice(mountRow.indexOf('/Volumes/')).trim())
+      : volName;
     const appleScript = `
       tell application "Finder"
-        tell disk "${volName}"
+        tell disk "${mountedVol}"
           open
           set current view of container window to icon view
           set toolbar visible of container window to false
@@ -450,13 +464,15 @@ async function createMacDmg() {
       end tell`;
     await spawn({ cmd: 'osascript', args: ['-e', appleScript] });
     await spawn({ cmd: 'sync', args: [] });
-    await spawn({ cmd: 'hdiutil', args: ['detach', mountPoint] });
   } catch (err) {
     console.warn(`---> DMG Finder styling skipped (${err.message}); image is still functional`);
-    try {
-      await spawn({ cmd: 'hdiutil', args: ['detach', mountPoint, '-force'] });
-    } catch (e) {
-      // Not mounted — nothing to detach.
+  } finally {
+    if (device) {
+      try {
+        await spawn({ cmd: 'hdiutil', args: ['detach', device, '-force'] });
+      } catch (e) {
+        // Already detached — nothing to do.
+      }
     }
   }
 
