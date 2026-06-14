@@ -2,14 +2,8 @@
 
 import qs from 'querystring';
 import crypto from 'crypto';
-import {
-  Account,
-  AccountStore,
-  IdentityStore,
-  MailsyncProcess,
-  localized,
-} from 'mailspring-exports';
-import MailspringProviderSettings from './mailspring-provider-settings.json';
+import { Account, AccountStore, IdentityStore, MailsyncProcess, localized } from 'moros-exports';
+import MorosProviderSettings from './moros-provider-settings.json';
 import MailcoreProviderSettings from './mailcore-provider-settings.json';
 import dns from 'dns';
 import {
@@ -141,13 +135,12 @@ export async function expandAccountWithCommonSettings(account: Account) {
   // find matching template by domain or provider in the old lookup tables
   // this matches the acccount type presets ("yahoo") and common domains against
   // data derived from Thunderbirds ISPDB.
-  let mstemplate =
-    MailspringProviderSettings[domain] || MailspringProviderSettings[account.provider];
+  let mstemplate = MorosProviderSettings[domain] || MorosProviderSettings[account.provider];
   if (mstemplate) {
     if (mstemplate.alias) {
-      mstemplate = MailspringProviderSettings[mstemplate.alias];
+      mstemplate = MorosProviderSettings[mstemplate.alias];
     }
-    console.log(`Using Mailspring Template: ${JSON.stringify(mstemplate, null, 2)}`);
+    console.log(`Using Moros Template: ${JSON.stringify(mstemplate, null, 2)}`);
   } else {
     console.log(`Using Fallback Template`);
     mstemplate = {
@@ -203,7 +196,7 @@ export async function expandAccountWithCommonSettings(account: Account) {
   // on protonmail by default Folders set as container folder
   const containerFolderDefault = AccountStore.containerFolderDefaultGetter();
   if (
-    containerFolderDefault !== 'Mailspring' &&
+    containerFolderDefault !== 'Moros' &&
     (populated.settings.container_folder === '' ||
       populated.settings.container_folder === undefined)
   ) {
