@@ -81,4 +81,4 @@ jobs:
         run: |
           aws s3 sync app/dist/ "s3://mailspring-builds/client/$(git rev-parse --short=8 HEAD)/osx" \
             --acl public-read \
-            --exclude "*" --include *.zip --include *.dmg
+            --exclude "*" --include "*.zip" --include "*.dmg"
