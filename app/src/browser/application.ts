@@ -1060,21 +1060,27 @@ export default class Application extends EventEmitter {
     // blocking modal or unresolved await in headless mode), force-exit with a
     // non-zero code after a configurable timeout so CI gets a fast, labelled
     // failure instead of burning the full step timeout.
+    // A non-positive or non-numeric MOROS_SPEC_TIMEOUT disables the watchdog
+    // (e.g. MOROS_SPEC_TIMEOUT=0 to opt out). The `|| '10'` only covers an
+    // empty/unset value; without this guard parseInt would yield 0 or NaN and
+    // setTimeout(..., 0 | NaN) would fire on the next tick, exiting before a
+    // single spec runs.
     const watchdogMinutes = parseInt(process.env.MOROS_SPEC_TIMEOUT || '10', 10);
-    const watchdogMs = watchdogMinutes * 60 * 1000;
-    const watchdogTimer = setTimeout(() => {
-      console.error(
-        `\n[spec watchdog] Spec suite did not complete within ${watchdogMinutes} minute(s). ` +
-          `This usually means a blocking modal (showMessageBoxSync / dialog.*Sync) or an ` +
-          `unresolved await is hanging the renderer in headless mode. Force-exiting with code 1.\n`
-      );
-      app.exit(1);
-    }, watchdogMs);
+    if (Number.isFinite(watchdogMinutes) && watchdogMinutes > 0) {
+      const watchdogTimer = setTimeout(() => {
+        console.error(
+          `\n[spec watchdog] Spec suite did not complete within ${watchdogMinutes} minute(s). ` +
+            `This usually means a blocking modal (showMessageBoxSync / dialog.*Sync) or an ` +
+            `unresolved await is hanging the renderer in headless mode. Force-exiting with code 1.\n`
+        );
+        app.exit(1);
+      }, watchdogMinutes * 60 * 1000);
 
-    // Timers with unref() do not keep the Node event loop alive on their own,
-    // so if specs complete and app.quit() is called normally the process will
-    // exit before the watchdog fires.
-    if (watchdogTimer.unref) watchdogTimer.unref();
+      // Timers with unref() do not keep the Node event loop alive on their own,
+      // so if specs complete and app.quit() is called normally the process will
+      // exit before the watchdog fires.
+      if (watchdogTimer.unref) watchdogTimer.unref();
+    }
 
     this.windowManager.ensureWindow(WindowManager.SPEC_WINDOW, specWindowOptions);
   }
