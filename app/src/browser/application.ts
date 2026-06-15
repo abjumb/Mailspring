@@ -80,37 +80,46 @@ export default class Application extends EventEmitter {
       safeMode,
     });
 
-    try {
-      const mailsync = new MailsyncProcess(options);
-      await mailsync.migrate();
-    } catch (err) {
-      let message = null;
-      let buttons = [localized('Quit')];
-      if (err.toString().includes('ENOENT')) {
-        message = localized(
-          `Mailspring could not find the mailsync process. If you're building Mailspring from source, make sure mailsync.tar.gz has been downloaded and unpacked in your working copy.`
-        );
-      } else if (err.toString().includes('spawn')) {
-        message = localized(`Mailspring could not spawn the mailsync process. %@`, err.toString());
-      } else {
-        message = localized(
-          `We encountered a problem with your local email database. %@\n\nCheck that no other copies of Mailspring are running and click Rebuild to reset your local cache.`,
-          err.toString()
-        );
-        buttons = [localized('Quit'), localized('Rebuild')];
-      }
+    // In spec mode the mailsync binary is not present, so skip migrations
+    // entirely. showMessageBoxSync blocks indefinitely in headless test
+    // environments (xvfb can't render or accept input), which caused the spec
+    // suite to hang until the 20-minute CI timeout.
+    if (!this.specMode) {
+      try {
+        const mailsync = new MailsyncProcess(options);
+        await mailsync.migrate();
+      } catch (err) {
+        let message = null;
+        let buttons = [localized('Quit')];
+        if (err.toString().includes('ENOENT')) {
+          message = localized(
+            `Mailspring could not find the mailsync process. If you're building Mailspring from source, make sure mailsync.tar.gz has been downloaded and unpacked in your working copy.`
+          );
+        } else if (err.toString().includes('spawn')) {
+          message = localized(
+            `Mailspring could not spawn the mailsync process. %@`,
+            err.toString()
+          );
+        } else {
+          message = localized(
+            `We encountered a problem with your local email database. %@\n\nCheck that no other copies of Mailspring are running and click Rebuild to reset your local cache.`,
+            err.toString()
+          );
+          buttons = [localized('Quit'), localized('Rebuild')];
+        }
 
-      const buttonIndex = dialog.showMessageBoxSync({ type: 'warning', buttons, message });
+        const buttonIndex = dialog.showMessageBoxSync({ type: 'warning', buttons, message });
 
-      if (buttonIndex === 0) {
-        app.quit();
-      } else {
-        this._deleteDatabase(() => {
-          app.relaunch();
+        if (buttonIndex === 0) {
           app.quit();
-        });
+        } else {
+          this._deleteDatabase(() => {
+            app.relaunch();
+            app.quit();
+          });
+        }
+        return;
       }
-      return;
     }
 
     const Config = require('../config').default;
@@ -316,14 +325,19 @@ export default class Application extends EventEmitter {
     this._resettingAndRelaunching = true;
 
     if (errorMessage) {
-      dialog.showMessageBoxSync({
-        type: 'warning',
-        buttons: [localized('Okay')],
-        message: localized(
-          `We encountered a problem with your local email database. We will now attempt to rebuild it.`
-        ),
-        detail: errorMessage,
-      });
+      // showMessageBoxSync blocks indefinitely in headless test environments.
+      if (this.specMode) {
+        console.error(`[spec] database reset triggered — skipping dialog: ${errorMessage}`);
+      } else {
+        dialog.showMessageBoxSync({
+          type: 'warning',
+          buttons: [localized('Okay')],
+          message: localized(
+            `We encountered a problem with your local email database. We will now attempt to rebuild it.`
+          ),
+          detail: errorMessage,
+        });
+      }
     }
 
     const done = () => {
@@ -1041,6 +1055,26 @@ export default class Application extends EventEmitter {
     specWindowOptions.resourcePath = resourcePath;
     specWindowOptions.configDirPath = configDirPath;
     specWindowOptions.bootstrapScript = bootstrapScript;
+
+    // Watchdog: if the spec renderer never signals completion (e.g. due to a
+    // blocking modal or unresolved await in headless mode), force-exit with a
+    // non-zero code after a configurable timeout so CI gets a fast, labelled
+    // failure instead of burning the full step timeout.
+    const watchdogMinutes = parseInt(process.env.MOROS_SPEC_TIMEOUT || '10', 10);
+    const watchdogMs = watchdogMinutes * 60 * 1000;
+    const watchdogTimer = setTimeout(() => {
+      console.error(
+        `\n[spec watchdog] Spec suite did not complete within ${watchdogMinutes} minute(s). ` +
+          `This usually means a blocking modal (showMessageBoxSync / dialog.*Sync) or an ` +
+          `unresolved await is hanging the renderer in headless mode. Force-exiting with code 1.\n`
+      );
+      app.exit(1);
+    }, watchdogMs);
+
+    // Timers with unref() do not keep the Node event loop alive on their own,
+    // so if specs complete and app.quit() is called normally the process will
+    // exit before the watchdog fires.
+    if (watchdogTimer.unref) watchdogTimer.unref();
 
     this.windowManager.ensureWindow(WindowManager.SPEC_WINDOW, specWindowOptions);
   }
