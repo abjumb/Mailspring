@@ -15,6 +15,11 @@ The guiding constraints:
   exactly as upstream. New modules live in their own internal packages and persist data
   outside the mail database (JSON in the config directory + OS keychain for secrets).
 
+> **Status (June 2026):** Phases 1–4 are implemented and merged; Phase 2.5 in-window
+> tiling is merged (#23, #26) and pop-out widgets are in held **PR #24**; Phase 5
+> distribution scaffolding is in held **PR #25**. Remaining: the icon set / wordmark
+> (design assets) and hands-on verification of the held PRs.
+
 ## Phases
 
 ### Phase 1 — Foundation (this PR)
@@ -39,8 +44,8 @@ The guiding constraints:
 - [x] Tasks: search/filter.
 - [x] Tasks: "Create task from email" — thread-actions toolbar button files the
       selected thread(s) as tasks titled with their subjects.
-- [ ] Tasks: labels, board (kanban) view, drag to reorder, keyboard shortcuts
-      (`c` to create, `1-4` to set priority — Linear bindings), task → thread link-back.
+- [x] Tasks: labels, board (kanban) view, drag to reorder, keyboard shortcuts
+      (`c` to create, `1-4` to set priority — Linear bindings), task → thread link-back. (#17, #20)
 - [x] Finance: month navigation (summary cards + transaction list scoped to the
       viewed month, with full-history toggle).
 - [x] Finance: configurable currency (header picker, persisted in
@@ -50,11 +55,11 @@ The guiding constraints:
       as the design reference; its app dashboard is behind a login/bot wall, so the
       layout follows Origin's published overview) — running-balance headline with a
       period delta badge, 1W/1M/3M/1Y/All range pills, and a daily area chart.
-- [ ] Finance: budgets per category, CSV import, chart hover scrubber.
+- [x] Finance: budgets per category, CSV import, chart hover scrubber. (#18)
 - [x] KeyNest (secrets): crash-safe write ordering — secret stored before a visible
       entry exists, metadata flushed before keychain deletion; revealed secrets
       auto-hide after 15 s; search, kind filter, expiry chips, 30 s clipboard clear.
-- [ ] KeyNest: TOTP support, secret strength meter, import from CSV/1Password/Bitwarden.
+- [x] KeyNest: TOTP support, secret strength meter, import from CSV/1Password/Bitwarden. (#19)
 
 > Module set note: the secrets manager shipped as **KeyNest** (an evolution of the
 > original Vault — same `vault.json` / keychain prefix), and the app now also includes
@@ -65,30 +70,30 @@ The guiding constraints:
 
 - [x] Moros modules appear exactly once in the sidebar regardless of account count
       (sidebar extensions may now return `null` for sections they skip).
-- [ ] App-level navigation rail (Mail / Tasks / Finance / …) replacing the sidebar
-      injection entirely.
-- [ ] Command palette (`Cmd/Ctrl+K`) covering navigation and module actions — Linear's
+- [x] App-level navigation rail (Mail / Tasks / Finance / …) replacing the sidebar
+      injection entirely. (#22)
+- [x] Command palette (`Cmd/Ctrl+K`) covering navigation and module actions — Linear's
       primary interaction model. Moros's keymap + menu infrastructure already
-      provides most of the plumbing.
+      provides most of the plumbing. (#21)
 - [x] Linear-style light theme variant (`ui-linear-light`).
 
-### Phase 2.5 — Tiling panels & desktop widgets (next PR)
+### Phase 2.5 — Tiling panels & desktop widgets
 
-- [ ] Compose every module view from tileable panels (drag to rearrange, resize,
-      hide/restore), persisted per module.
+- [x] Compose every module view from tileable panels (drag to rearrange, resize,
+      hide/restore), persisted per module. (#23 Finance, #26 all modules)
 - [ ] Pop any panel out into its own always-on-top desktop widget window, with data
-      live-syncing across windows. (Built once on this branch; being re-landed on top
-      of the current 5-module app in a dedicated PR.)
+      live-syncing across windows. → **PR #24** (implemented; held for hands-on
+      multi-window verification).
 
 ### Phase 4 — Rebrand
 
-- [ ] Product naming: Moros → Moros (productName, window titles, about dialog,
-      onboarding copy). Keep config directory and sync-engine identifiers compatible.
-- [ ] New icon set / wordmark.
+- [x] Product naming (productName, window titles, about dialog, onboarding copy);
+      config directory and sync-engine identifiers kept compatible.
+- [ ] New icon set / wordmark. (needs design assets)
 
 ### Phase 5 — Distribution
 
-- [ ] Windows installer built from the existing `electron-winstaller` + `app/build`
+- [x] Windows installer built from the existing `electron-winstaller` + `app/build`
       pipeline, producing `MorosSetup.exe`.
 - [x] macOS native installer: `createMacDmg()` in `app/build/build.js` produces a
       compressed drag-to-Applications `.dmg` (`Moros-<version>-<arch>.dmg`) using the
@@ -96,8 +101,8 @@ The guiding constraints:
       `osascript` window styling). The `.app` it contains is the launcher; packager
       already signs/notarizes it. The macOS CI workflow renames it to
       `Moros-AppleSilicon.dmg` and uploads it to S3 alongside the auto-update `.zip`.
-- [ ] Notarize/staple the `.dmg` itself (the `.app` inside is already notarized).
-- [ ] CI release workflow for tagged builds.
+- [ ] Notarize/staple the `.dmg` itself (the `.app` inside is already notarized). → **PR #25** (implemented; held for signing creds + release testing).
+- [ ] CI release workflow for tagged builds. → **PR #25** (implemented; held).
 
 ## Review gate
 
