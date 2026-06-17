@@ -537,10 +537,23 @@ async function notarizeMacDmg() {
   // temporary keychain profile first (that call is short-lived), then submit
   // using --keychain-profile (no secret in argv during the long wait).
   // -------------------------------------------------------------------------
-  const profileName = `moros-notarytool-${Date.now()}`;
+  // Use a DEDICATED, throwaway keychain for the notarization credentials. This
+  // keeps the app-specific password out of argv during the long `submit --wait`
+  // (it's only passed to the brief store-credentials call), and — crucially —
+  // lets us remove the credential by deleting the whole keychain afterward,
+  // regardless of the internal service/account name notarytool uses for the
+  // stored profile (which varies by Xcode version).
+  const profileName = 'moros-notary';
+  const keychainPath = path.join(os.tmpdir(), `moros-notary-${Date.now()}.keychain-db`);
 
   try {
-    console.log('---> Storing notarytool credentials in temporary keychain profile');
+    console.log('---> Creating temporary keychain for notarization');
+    await spawn({ cmd: 'security', args: ['create-keychain', '-p', '', keychainPath] });
+    // Don't let it auto-lock during the multi-minute notarization wait.
+    await spawn({ cmd: 'security', args: ['set-keychain-settings', keychainPath] });
+    await spawn({ cmd: 'security', args: ['unlock-keychain', '-p', '', keychainPath] });
+
+    console.log('---> Storing notarytool credentials in the temporary keychain');
     await spawn({
       cmd: 'xcrun',
       args: [
@@ -550,13 +563,13 @@ async function notarizeMacDmg() {
         '--apple-id', APPLE_ID,
         '--password', APPLE_ID_PASSWORD,
         '--team-id', APPLE_TEAM_ID,
+        '--keychain', keychainPath,
       ],
     });
 
-    // Submit the dmg and block until Apple returns a verdict. `--wait` makes the
-    // command exit non-zero if notarization is rejected, which (intentionally)
-    // surfaces as a build failure since the credentials WERE provided. The
-    // password is no longer in argv here — only the opaque profile name is.
+    // Submit and block until Apple returns a verdict. `--wait` makes the command
+    // exit non-zero if notarization is rejected, which (intentionally) surfaces
+    // as a build failure since credentials WERE provided. No secret in argv here.
     console.log(`---> Submitting ${dmgPath} for notarization`);
     await spawn({
       cmd: 'xcrun',
@@ -565,32 +578,22 @@ async function notarizeMacDmg() {
         'submit',
         dmgPath,
         '--keychain-profile', profileName,
+        '--keychain', keychainPath,
         '--wait',
       ],
     });
 
-    // Staple the notarization ticket into the dmg so Gatekeeper can verify it
-    // without a network round-trip.
+    // Staple the ticket so Gatekeeper can verify offline.
     console.log(`---> Stapling notarization ticket to ${dmgPath}`);
     await spawn({ cmd: 'xcrun', args: ['stapler', 'staple', dmgPath] });
     console.log(`>> Notarized and stapled ${dmgPath}`);
   } finally {
-    // Review follow-up: delete the temporary notarytool keychain profile so the
-    // app-specific Apple password isn't left stored in the login keychain after
-    // the build — on success OR failure. `notarytool store-credentials` saves
-    // under this service name; deletion is best-effort and must not mask a real
-    // notarization error.
+    // Delete the throwaway keychain (and the credential it held) on success or
+    // failure. Best-effort: cleanup must not mask a real notarization error.
     try {
-      await spawn({
-        cmd: 'security',
-        args: [
-          'delete-generic-password',
-          '-s', 'com.apple.gke.notary.tool.saved-creds',
-          '-a', profileName,
-        ],
-      });
+      await spawn({ cmd: 'security', args: ['delete-keychain', keychainPath] });
     } catch (cleanupErr) {
-      console.log(`---> Note: could not remove temporary notarytool profile ${profileName}`);
+      console.log(`---> Note: could not delete temporary keychain ${keychainPath}`);
     }
   }
 }
