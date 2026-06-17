@@ -50,7 +50,38 @@ permissions:
   contents: write
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # Finding #1 — Validate release source (P1)
+  #
+  # Ensure the tagged commit is reachable from origin/master before we sign
+  # anything. A tag pushed to an un-merged branch would otherwise sail through
+  # the full signing pipeline and produce a signed artifact from unreviewed code.
+  #
+  # Technique: `git merge-base --is-ancestor A B` exits 0 iff A is an ancestor
+  # of B. We check that GITHUB_SHA (the commit the tag points to) is an ancestor
+  # of origin/master. fetch-depth: 0 is required so the full history is present.
+  # ---------------------------------------------------------------------------
+  verify-source:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tagged commit is on master
+        run: |
+          git fetch origin master
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/master; then
+            echo "::error::Tagged commit $GITHUB_SHA is not an ancestor of origin/master. Only tags pushed to commits merged into master may be released. Merge the branch first then re-push the tag."
+            exit 1
+          fi
+          echo "Verified: $GITHUB_SHA is on master."
+
   build-macos:
+    # Finding #1 — all build/sign jobs wait for the ancestry check.
+    needs: verify-source
+
     strategy:
       matrix:
         include:
@@ -76,6 +107,36 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      # -----------------------------------------------------------------------
+      # Finding #2 — Missing secrets fail early (P1)
+      #
+      # Check all required signing / notarization secrets are present BEFORE
+      # attempting to import certs or run the build. Failing here with an
+      # actionable message is far less confusing than a mid-build failure inside
+      # apple-actions/import-codesign-certs or xcrun notarytool.
+      # -----------------------------------------------------------------------
+      - name: Check required signing secrets
+        run: |
+          missing=""
+          [ -z "$APPLE_CODESIGN_P12"             ] && missing="$missing APPLE_CODESIGN_P12"
+          [ -z "$APPLE_CODESIGN_KEY_PASSWORD"     ] && missing="$missing APPLE_CODESIGN_KEY_PASSWORD"
+          [ -z "$APPLE_PROVISIONING_PROFILE_B64"  ] && missing="$missing APPLE_PROVISIONING_PROFILE_B64"
+          [ -z "$APPLE_ID"                        ] && missing="$missing APPLE_ID"
+          [ -z "$APPLE_ID_PASSWORD"               ] && missing="$missing APPLE_ID_PASSWORD"
+          [ -z "$APPLE_TEAM_ID"                   ] && missing="$missing APPLE_TEAM_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::The following required signing/notarization secrets are not configured in this repository. Set them under Settings > Secrets and variables > Actions before running a release: $missing"
+            exit 1
+          fi
+          echo "All required signing secrets are present."
+        env:
+          APPLE_CODESIGN_P12: ${{ secrets.APPLE_CODESIGN_P12 }}
+          APPLE_CODESIGN_KEY_PASSWORD: ${{ secrets.APPLE_CODESIGN_KEY_PASSWORD }}
+          APPLE_PROVISIONING_PROFILE_B64: ${{ secrets.APPLE_PROVISIONING_PROFILE_B64 }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
       - name: Setup Codesigning
         uses: apple-actions/import-codesign-certs@v3
         with:
@@ -92,6 +153,16 @@ jobs:
       - name: Lint
         run: npm run lint:check
 
+      # -----------------------------------------------------------------------
+      # Finding #4 — Force macOS arch from matrix.arch (P2)
+      #
+      # build.js derives the packaged arch from process.arch unless
+      # OVERRIDE_TO_INTEL=true is set (which forces x64). To prevent any
+      # divergence between the matrix label and the actual packaged arch, we set
+      # OVERRIDE_TO_INTEL for the Intel (x64) matrix leg — exactly the same
+      # mechanism build.js already supports. On the arm64 leg the variable is
+      # absent and process.arch (arm64) is used as before.
+      # -----------------------------------------------------------------------
       # Builds, signs and notarizes Moros.app, then builds + notarizes + staples
       # the .dmg (build.js -> notarizeMacDmg()). APPLE_ID gates both the .app
       # notarization (osxNotarize) and the new .dmg notarization step.
@@ -106,11 +177,28 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          # Finding #4: drive arch from matrix; x64 leg sets OVERRIDE_TO_INTEL so
+          # build.js packages x64 explicitly rather than relying on process.arch.
+          OVERRIDE_TO_INTEL: ${{ matrix.arch == 'x64' && 'true' || '' }}
 
-      - name: Rename artifacts
-        if: matrix.os == 'macos-latest'
-        run: |
-          mv app/dist/Moros.zip app/dist/Moros-AppleSilicon.zip
+      # -----------------------------------------------------------------------
+      # Finding #3 — Intel updater zip missing (P1)
+      #
+      # The arm64 (macos-latest) job renames Moros.zip to Moros-AppleSilicon.zip.
+      # The x64 (macos-15-intel) job previously had no equivalent step, so the
+      # Squirrel.Mac updater zip was never uploaded for Intel users.
+      #
+      # We now rename on both legs with an arch-labelled name consistent with the
+      # DMG naming below (AppleSilicon / Intel). The if-conditions are mutually
+      # exclusive so exactly one rename runs per matrix leg.
+      # -----------------------------------------------------------------------
+      - name: Rename updater zip (arm64)
+        if: matrix.arch == 'arm64'
+        run: mv app/dist/Moros.zip app/dist/Moros-AppleSilicon.zip
+
+      - name: Rename updater zip (x64)
+        if: matrix.arch == 'x64'
+        run: mv app/dist/Moros.zip app/dist/Moros-Intel.zip
 
       # Mirror the build-macos.yaml naming so the Release assets are arch-labelled
       # rather than carrying the raw versioned filename on Intel.
@@ -125,11 +213,14 @@ jobs:
           name: release-macos-${{ matrix.arch }}
           path: |
             app/dist/*.dmg
-            app/dist/Moros-AppleSilicon.zip
+            app/dist/*.zip
           retention-days: 1
           if-no-files-found: ignore
 
   build-linux:
+    # Finding #1 — all build/sign jobs wait for the ancestry check.
+    needs: verify-source
+
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -173,6 +264,9 @@ jobs:
           retention-days: 1
 
   build-linux-arm64:
+    # Finding #1 — all build/sign jobs wait for the ancestry check.
+    needs: verify-source
+
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
@@ -216,6 +310,9 @@ jobs:
           retention-days: 1
 
   build-windows:
+    # Finding #1 — all build/sign jobs wait for the ancestry check.
+    needs: verify-source
+
     runs-on: windows-2022
     steps:
       - name: Checkout Repo
@@ -281,11 +378,22 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
+      # -----------------------------------------------------------------------
+      # Finding #6 — Upload full Windows release payload (P2)
+      #
+      # electron-winstaller emits MorosSetup.exe, *.nupkg, and RELEASES in
+      # app/dist. Only uploading MorosSetup.exe leaves out the Squirrel metadata
+      # files that auto-update clients require. Mirror what build-windows.yaml
+      # syncs to S3 and upload all three artifact types.
+      # -----------------------------------------------------------------------
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-windows-x64
-          path: app/dist/MorosSetup.exe
+          path: |
+            app/dist/MorosSetup.exe
+            app/dist/*.nupkg
+            app/dist/RELEASES
           retention-days: 1
 
   release:

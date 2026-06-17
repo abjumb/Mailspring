@@ -528,9 +528,34 @@ async function notarizeMacDmg() {
     return;
   }
 
+  // -------------------------------------------------------------------------
+  // Finding #5 — Password exposed in argv (P2)
+  //
+  // `xcrun notarytool submit ... --password <secret> --wait` keeps the
+  // app-specific password visible in the process list for the entire duration
+  // of the (multi-minute) --wait poll. Fix: store the credentials in a
+  // temporary keychain profile first (that call is short-lived), then submit
+  // using --keychain-profile (no secret in argv during the long wait).
+  // -------------------------------------------------------------------------
+  const profileName = `moros-notarytool-${Date.now()}`;
+
+  console.log('---> Storing notarytool credentials in temporary keychain profile');
+  await spawn({
+    cmd: 'xcrun',
+    args: [
+      'notarytool',
+      'store-credentials',
+      profileName,
+      '--apple-id', APPLE_ID,
+      '--password', APPLE_ID_PASSWORD,
+      '--team-id', APPLE_TEAM_ID,
+    ],
+  });
+
   // Submit the dmg and block until Apple returns a verdict. `--wait` makes the
   // command exit non-zero if notarization is rejected, which (intentionally)
-  // surfaces as a build failure since the credentials WERE provided.
+  // surfaces as a build failure since the credentials WERE provided. The
+  // password is no longer in argv here — only the opaque profile name is.
   console.log(`---> Submitting ${dmgPath} for notarization`);
   await spawn({
     cmd: 'xcrun',
@@ -538,12 +563,7 @@ async function notarizeMacDmg() {
       'notarytool',
       'submit',
       dmgPath,
-      '--apple-id',
-      APPLE_ID,
-      '--password',
-      APPLE_ID_PASSWORD,
-      '--team-id',
-      APPLE_TEAM_ID,
+      '--keychain-profile', profileName,
       '--wait',
     ],
   });
