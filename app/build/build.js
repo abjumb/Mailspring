@@ -485,6 +485,119 @@ async function createMacDmg() {
   console.log(`>> Created ${dmgPath}`);
 }
 
+// Notarizes and staples the .dmg ITSELF. The Moros.app *inside* the image is
+// already notarized by electron-packager's `osxNotarize` step (see
+// buildPackagerOptions above), but the disk image as a downloadable artifact is
+// a separate distributable: notarizing + stapling it lets Gatekeeper validate
+// the .dmg fully offline, so users who download it directly don't see the
+// "cannot verify the developer" prompt.
+//
+// REQUIRES YOUR SECRETS / NEEDS REAL RELEASE TESTING:
+//   This shells out to Apple's `notarytool` and `stapler` (Xcode command-line
+//   tools) using the SAME Apple credentials the `osxNotarize` block above uses:
+//     - APPLE_ID            (Apple developer account email)
+//     - APPLE_ID_PASSWORD   (app-specific password for that Apple ID)
+//     - APPLE_TEAM_ID       (Apple Developer Team ID)
+//   It can only be exercised on a macOS build machine that has these set and
+//   valid (i.e. CI with the release secrets, or a developer Mac). It is NOT
+//   runnable/testable in regular CI or on Linux/Windows.
+//
+// GATING: if any of those env vars are missing (local/dev builds, non-mac, or
+// CI without the Apple secrets) we skip cleanly with a log line and NEVER fail
+// the build — exactly like the existing osxNotarize block, which is itself
+// gated on APPLE_ID being present.
+async function notarizeMacDmg() {
+  // Only meaningful on macOS — `xcrun notarytool`/`stapler` don't exist
+  // elsewhere. On any other platform this is a no-op.
+  if (platform !== 'darwin') {
+    return;
+  }
+
+  const { APPLE_ID, APPLE_ID_PASSWORD, APPLE_TEAM_ID } = process.env;
+  if (!APPLE_ID || !APPLE_ID_PASSWORD || !APPLE_TEAM_ID) {
+    console.log(
+      '---> Skipping .dmg notarization (set APPLE_ID, APPLE_ID_PASSWORD, APPLE_TEAM_ID to enable)'
+    );
+    return;
+  }
+
+  const arch = process.env.OVERRIDE_TO_INTEL ? 'x64' : process.arch;
+  const dmgPath = path.join(outputDir, `Moros-${packageJSON.version}-${arch}.dmg`);
+  if (!fs.existsSync(dmgPath)) {
+    console.log(`---> Skipping .dmg notarization (no dmg found at ${dmgPath})`);
+    return;
+  }
+
+  // -------------------------------------------------------------------------
+  // Finding #5 — Password exposed in argv (P2)
+  //
+  // `xcrun notarytool submit ... --password <secret> --wait` keeps the
+  // app-specific password visible in the process list for the entire duration
+  // of the (multi-minute) --wait poll. Fix: store the credentials in a
+  // temporary keychain profile first (that call is short-lived), then submit
+  // using --keychain-profile (no secret in argv during the long wait).
+  // -------------------------------------------------------------------------
+  // Use a DEDICATED, throwaway keychain for the notarization credentials. This
+  // keeps the app-specific password out of argv during the long `submit --wait`
+  // (it's only passed to the brief store-credentials call), and — crucially —
+  // lets us remove the credential by deleting the whole keychain afterward,
+  // regardless of the internal service/account name notarytool uses for the
+  // stored profile (which varies by Xcode version).
+  const profileName = 'moros-notary';
+  const keychainPath = path.join(os.tmpdir(), `moros-notary-${Date.now()}.keychain-db`);
+
+  try {
+    console.log('---> Creating temporary keychain for notarization');
+    await spawn({ cmd: 'security', args: ['create-keychain', '-p', '', keychainPath] });
+    // Don't let it auto-lock during the multi-minute notarization wait.
+    await spawn({ cmd: 'security', args: ['set-keychain-settings', keychainPath] });
+    await spawn({ cmd: 'security', args: ['unlock-keychain', '-p', '', keychainPath] });
+
+    console.log('---> Storing notarytool credentials in the temporary keychain');
+    await spawn({
+      cmd: 'xcrun',
+      args: [
+        'notarytool',
+        'store-credentials',
+        profileName,
+        '--apple-id', APPLE_ID,
+        '--password', APPLE_ID_PASSWORD,
+        '--team-id', APPLE_TEAM_ID,
+        '--keychain', keychainPath,
+      ],
+    });
+
+    // Submit and block until Apple returns a verdict. `--wait` makes the command
+    // exit non-zero if notarization is rejected, which (intentionally) surfaces
+    // as a build failure since credentials WERE provided. No secret in argv here.
+    console.log(`---> Submitting ${dmgPath} for notarization`);
+    await spawn({
+      cmd: 'xcrun',
+      args: [
+        'notarytool',
+        'submit',
+        dmgPath,
+        '--keychain-profile', profileName,
+        '--keychain', keychainPath,
+        '--wait',
+      ],
+    });
+
+    // Staple the ticket so Gatekeeper can verify offline.
+    console.log(`---> Stapling notarization ticket to ${dmgPath}`);
+    await spawn({ cmd: 'xcrun', args: ['stapler', 'staple', dmgPath] });
+    console.log(`>> Notarized and stapled ${dmgPath}`);
+  } finally {
+    // Delete the throwaway keychain (and the credential it held) on success or
+    // failure. Best-effort: cleanup must not mask a real notarization error.
+    try {
+      await spawn({ cmd: 'security', args: ['delete-keychain', keychainPath] });
+    } catch (cleanupErr) {
+      console.log(`---> Note: could not delete temporary keychain ${keychainPath}`);
+    }
+  }
+}
+
 function writeFromTemplate(filePath, data) {
   const template = _.template(String(fs.readFileSync(filePath)));
   const finishedPath = path.join(outputDir, path.basename(filePath).replace('.in', ''));
@@ -577,6 +690,8 @@ async function main() {
     // native installer.
     await createMacZip();
     await createMacDmg();
+    // Notarize + staple the .dmg itself (no-op without Apple credentials).
+    await notarizeMacDmg();
   } else if (platform === 'linux') {
     await createDebInstaller();
     await createRpmInstaller();
