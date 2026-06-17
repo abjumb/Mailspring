@@ -1,12 +1,12 @@
 # Moros Productivity — Roadmap
 
-Moros is a fork of Mailspring that turns the mail client into a lightweight all-in-one
+Moros is a fork of Moros that turns the mail client into a lightweight all-in-one
 productivity tool: **mail, tasks, personal finance, and an encrypted API key / password
 vault**, presented with a UI/UX modeled closely on [Linear](https://linear.app).
 
 The guiding constraints:
 
-- **Lightweight.** Reuse Mailspring's existing infrastructure (package system, workspace
+- **Lightweight.** Reuse Moros's existing infrastructure (package system, workspace
   sheets, flux stores, theming, build/installer pipeline) instead of adding new frameworks
   or dependencies.
 - **Linear-grade UI.** Dark, dense, keyboard-friendly. Indigo `#5E6AD2` accent, Inter type
@@ -30,7 +30,7 @@ The guiding constraints:
     stored locally; **secret values never touch disk in plaintext** — they are stored via
     `KeyManager`, which encrypts with Electron `safeStorage` (OS keychain).
 - [x] Shared `MorosDataStore` base class: debounced atomic JSON persistence under
-      `<config>/moros/`, change events via `MailspringStore`.
+      `<config>/moros/`, change events via `MorosStore`.
 
 ### Phase 2 — Module depth
 
@@ -68,7 +68,7 @@ The guiding constraints:
 - [ ] App-level navigation rail (Mail / Tasks / Finance / …) replacing the sidebar
       injection entirely.
 - [ ] Command palette (`Cmd/Ctrl+K`) covering navigation and module actions — Linear's
-      primary interaction model. Mailspring's keymap + menu infrastructure already
+      primary interaction model. Moros's keymap + menu infrastructure already
       provides most of the plumbing.
 - [x] Linear-style light theme variant (`ui-linear-light`).
 
@@ -82,7 +82,7 @@ The guiding constraints:
 
 ### Phase 4 — Rebrand
 
-- [ ] Product naming: Mailspring → Moros (productName, window titles, about dialog,
+- [ ] Product naming: Moros → Moros (productName, window titles, about dialog,
       onboarding copy). Keep config directory and sync-engine identifiers compatible.
 - [ ] New icon set / wordmark.
 
@@ -90,6 +90,13 @@ The guiding constraints:
 
 - [ ] Windows installer built from the existing `electron-winstaller` + `app/build`
       pipeline, producing `MorosSetup.exe`.
+- [x] macOS native installer: `createMacDmg()` in `app/build/build.js` produces a
+      compressed drag-to-Applications `.dmg` (`Moros-<version>-<arch>.dmg`) using the
+      bundled `DMG-Background.png`, dependency-free via `hdiutil` (+ best-effort
+      `osascript` window styling). The `.app` it contains is the launcher; packager
+      already signs/notarizes it. The macOS CI workflow renames it to
+      `Moros-AppleSilicon.dmg` and uploads it to S3 alongside the auto-update `.zip`.
+- [ ] Notarize/staple the `.dmg` itself (the `.app` inside is already notarized).
 - [ ] CI release workflow for tagged builds.
 
 ## Review gate

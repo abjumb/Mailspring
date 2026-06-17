@@ -1,4 +1,4 @@
-// Direct imports from source — the plugin is not registered in mailspring-exports.
+// Direct imports from source — the plugin is not registered in moros-exports.
 import {
   DEFAULT_GENERATOR_OPTIONS,
   GeneratorOptions,

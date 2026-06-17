@@ -17,7 +17,7 @@ import AutoUpdateManager from './autoupdate-manager';
 import SystemAccentWatcher from './system-accent-watcher';
 import SystemTrayManager from './system-tray-manager';
 import { DefaultClientHelper } from '../default-client-helper';
-import MailspringProtocolHandler from './mailspring-protocol-handler';
+import MorosProtocolHandler from './moros-protocol-handler';
 import ConfigPersistenceManager from './config-persistence-manager';
 import moveToApplications from './move-to-applications';
 import { MailsyncProcess } from '../mailsync-process';
@@ -47,7 +47,7 @@ export default class Application extends EventEmitter {
   configPersistenceManager: ConfigPersistenceManager;
   fileListCache: FileListCache;
   applicationMenu: ApplicationMenu;
-  mailspringProtocolHandler: MailspringProtocolHandler;
+  morosProtocolHandler: MorosProtocolHandler;
   windowManager: WindowManager;
   autoUpdateManager: AutoUpdateManager;
   systemAccentWatcher: SystemAccentWatcher;
@@ -74,52 +74,43 @@ export default class Application extends EventEmitter {
     this.safeMode = safeMode;
 
     this.fileListCache = new FileListCache();
-    this.mailspringProtocolHandler = new MailspringProtocolHandler({
+    this.morosProtocolHandler = new MorosProtocolHandler({
       configDirPath,
       resourcePath,
       safeMode,
     });
 
-    // In spec mode the mailsync binary is not present, so skip migrations
-    // entirely. showMessageBoxSync blocks indefinitely in headless test
-    // environments (xvfb can't render or accept input), which caused the spec
-    // suite to hang until the 20-minute CI timeout.
-    if (!this.specMode) {
-      try {
-        const mailsync = new MailsyncProcess(options);
-        await mailsync.migrate();
-      } catch (err) {
-        let message = null;
-        let buttons = [localized('Quit')];
-        if (err.toString().includes('ENOENT')) {
-          message = localized(
-            `Mailspring could not find the mailsync process. If you're building Mailspring from source, make sure mailsync.tar.gz has been downloaded and unpacked in your working copy.`
-          );
-        } else if (err.toString().includes('spawn')) {
-          message = localized(
-            `Mailspring could not spawn the mailsync process. %@`,
-            err.toString()
-          );
-        } else {
-          message = localized(
-            `We encountered a problem with your local email database. %@\n\nCheck that no other copies of Mailspring are running and click Rebuild to reset your local cache.`,
-            err.toString()
-          );
-          buttons = [localized('Quit'), localized('Rebuild')];
-        }
-
-        const buttonIndex = dialog.showMessageBoxSync({ type: 'warning', buttons, message });
-
-        if (buttonIndex === 0) {
-          app.quit();
-        } else {
-          this._deleteDatabase(() => {
-            app.relaunch();
-            app.quit();
-          });
-        }
-        return;
+    try {
+      const mailsync = new MailsyncProcess(options);
+      await mailsync.migrate();
+    } catch (err) {
+      let message = null;
+      let buttons = [localized('Quit')];
+      if (err.toString().includes('ENOENT')) {
+        message = localized(
+          `Moros could not find the mailsync process. If you're building Moros from source, make sure mailsync.tar.gz has been downloaded and unpacked in your working copy.`
+        );
+      } else if (err.toString().includes('spawn')) {
+        message = localized(`Moros could not spawn the mailsync process. %@`, err.toString());
+      } else {
+        message = localized(
+          `We encountered a problem with your local email database. %@\n\nCheck that no other copies of Moros are running and click Rebuild to reset your local cache.`,
+          err.toString()
+        );
+        buttons = [localized('Quit'), localized('Rebuild')];
       }
+
+      const buttonIndex = dialog.showMessageBoxSync({ type: 'warning', buttons, message });
+
+      if (buttonIndex === 0) {
+        app.quit();
+      } else {
+        this._deleteDatabase(() => {
+          app.relaunch();
+          app.quit();
+        });
+      }
+      return;
     }
 
     const Config = require('../config').default;
@@ -178,9 +169,9 @@ export default class Application extends EventEmitter {
 
     if (process.platform === 'linux') {
       const helper = new DefaultClientHelper();
-      helper.registerForURLScheme('mailspring');
+      helper.registerForURLScheme('moros');
     } else {
-      app.setAsDefaultProtocolClient('mailspring');
+      app.setAsDefaultProtocolClient('moros');
     }
   }
 
@@ -270,7 +261,7 @@ export default class Application extends EventEmitter {
     if (!addedToDock && appPath.includes('/Applications/') && appPath.includes('.app/')) {
       const appBundlePath = appPath.split('.app/')[0];
       proc.exec(
-        `defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-type</key><string>file-tile</string><key>tile-data</key><dict><key>file-type</key><integer>41</integer><key>file-label</key><string>Mailspring</string><key>bundle-identifier</key><string>com.mailspring.mailspring</string><key>file-data</key><dict><key>_CFURLString</key><string>file://${appBundlePath}.app/</string><key>_CFURLStringType</key><integer>15</integer></dict></dict></dict>" && pkill "Dock"`
+        `defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-type</key><string>file-tile</string><key>tile-data</key><dict><key>file-type</key><integer>41</integer><key>file-label</key><string>Moros</string><key>bundle-identifier</key><string>com.moros.moros</string><key>file-data</key><dict><key>_CFURLString</key><string>file://${appBundlePath}.app/</string><key>_CFURLStringType</key><integer>15</integer></dict></dict></dict>" && pkill "Dock"`
       );
       this.config.set('addedToDock', true);
     }
@@ -315,7 +306,7 @@ export default class Application extends EventEmitter {
     if (hasAccount) {
       this.windowManager.ensureWindow(WindowManager.MAIN_WINDOW, {}, behavior);
     } else {
-      const title = localized('Welcome to Mailspring');
+      const title = localized('Welcome to Moros');
       this.windowManager.ensureWindow(WindowManager.ONBOARDING_WINDOW, { title }, behavior);
     }
   }
@@ -325,19 +316,14 @@ export default class Application extends EventEmitter {
     this._resettingAndRelaunching = true;
 
     if (errorMessage) {
-      // showMessageBoxSync blocks indefinitely in headless test environments.
-      if (this.specMode) {
-        console.error(`[spec] database reset triggered — skipping dialog: ${errorMessage}`);
-      } else {
-        dialog.showMessageBoxSync({
-          type: 'warning',
-          buttons: [localized('Okay')],
-          message: localized(
-            `We encountered a problem with your local email database. We will now attempt to rebuild it.`
-          ),
-          detail: errorMessage,
-        });
-      }
+      dialog.showMessageBoxSync({
+        type: 'warning',
+        buttons: [localized('Okay')],
+        message: localized(
+          `We encountered a problem with your local email database. We will now attempt to rebuild it.`
+        ),
+        detail: errorMessage,
+      });
     }
 
     const done = () => {
@@ -394,8 +380,8 @@ export default class Application extends EventEmitter {
       app.quit();
     });
 
-    this.on('application:inspect', ({ x, y, MailspringWindow }) => {
-      const win = MailspringWindow || this.windowManager.focusedWindow();
+    this.on('application:inspect', ({ x, y, MorosWindow }) => {
+      const win = MorosWindow || this.windowManager.focusedWindow();
       if (!win) {
         return;
       }
@@ -409,7 +395,7 @@ export default class Application extends EventEmitter {
         onboarding.focus();
       } else {
         this.windowManager.ensureWindow(WindowManager.ONBOARDING_WINDOW, {
-          title: localized('Welcome to Mailspring'),
+          title: localized('Welcome to Moros'),
           windowProps: {},
         });
       }
@@ -931,16 +917,16 @@ export default class Application extends EventEmitter {
   // Public: Executes the given command on the given window.
   //
   // command - The string representing the command.
-  // MailspringWindow - The {MailspringWindow} to send the command to.
+  // MorosWindow - The {MorosWindow} to send the command to.
   // args - The optional arguments to pass along.
-  sendCommandToWindow = (command, MailspringWindow, ...args) => {
+  sendCommandToWindow = (command, MorosWindow, ...args) => {
     console.log('sendCommandToWindow');
     console.log(command);
     if (this.emit(command, ...args)) {
       return;
     }
-    if (MailspringWindow) {
-      MailspringWindow.sendCommand(command, ...args);
+    if (MorosWindow) {
+      MorosWindow.sendCommand(command, ...args);
     } else {
       this.sendCommandToFirstResponder(command);
     }
@@ -987,7 +973,7 @@ export default class Application extends EventEmitter {
 
     if (parts.protocol === 'mailto:') {
       main.sendMessage('mailto', urlToOpen);
-    } else if (parts.protocol === 'mailspring:') {
+    } else if (parts.protocol === 'moros:') {
       // Handle notification action URLs from Windows toast notifications
       // These URLs are triggered when users click buttons on Windows toast notifications
       // since Windows toast XML with activationType="background" doesn't work reliably with Electron
@@ -1017,7 +1003,7 @@ export default class Application extends EventEmitter {
     }
   }
 
-  // Opens up a new {MailspringWindow} to run specs within.
+  // Opens up a new {MorosWindow} to run specs within.
   //
   // options -
   //   :exitWhenDone - A Boolean that, if true, will close the window upon
@@ -1048,45 +1034,13 @@ export default class Application extends EventEmitter {
       );
     }
 
-    // Important: Use .mailspring-spec instead of .mailspring-mail to avoid overwriting the
+    // Important: Use .moros-spec instead of .moros-mail to avoid overwriting the
     // user's real email config!
-    const configDirPath = path.join(app.getPath('home'), '.mailspring-spec');
+    const configDirPath = path.join(app.getPath('home'), '.moros-spec');
 
     specWindowOptions.resourcePath = resourcePath;
     specWindowOptions.configDirPath = configDirPath;
     specWindowOptions.bootstrapScript = bootstrapScript;
-
-    // Watchdog: if the spec renderer never signals completion (e.g. due to a
-    // blocking modal or unresolved await in headless mode), force-exit with a
-    // non-zero code after a configurable timeout so CI gets a fast, labelled
-    // failure instead of burning the full step timeout.
-    //
-    // Only armed for exit-when-done (headless CI) runs. Interactive runs from
-    // the menu (application:run-all-specs) pass exitWhenDone: false and may
-    // legitimately run a long time on a slow machine, so they must not be
-    // force-quit mid-session.
-    //
-    // A non-positive or non-numeric MOROS_SPEC_TIMEOUT disables the watchdog
-    // (e.g. MOROS_SPEC_TIMEOUT=0 to opt out). The `|| '10'` only covers an
-    // empty/unset value; without this guard parseInt would yield 0 or NaN and
-    // setTimeout(..., 0 | NaN) would fire on the next tick, exiting before a
-    // single spec runs.
-    const watchdogMinutes = parseInt(process.env.MOROS_SPEC_TIMEOUT || '10', 10);
-    if (specWindowOptions.exitWhenDone && Number.isFinite(watchdogMinutes) && watchdogMinutes > 0) {
-      const watchdogTimer = setTimeout(() => {
-        console.error(
-          `\n[spec watchdog] Spec suite did not complete within ${watchdogMinutes} minute(s). ` +
-            `This usually means a blocking modal (showMessageBoxSync / dialog.*Sync) or an ` +
-            `unresolved await is hanging the renderer in headless mode. Force-exiting with code 1.\n`
-        );
-        app.exit(1);
-      }, watchdogMinutes * 60 * 1000);
-
-      // Timers with unref() do not keep the Node event loop alive on their own,
-      // so if specs complete and app.quit() is called normally the process will
-      // exit before the watchdog fires.
-      if (watchdogTimer.unref) watchdogTimer.unref();
-    }
 
     this.windowManager.ensureWindow(WindowManager.SPEC_WINDOW, specWindowOptions);
   }

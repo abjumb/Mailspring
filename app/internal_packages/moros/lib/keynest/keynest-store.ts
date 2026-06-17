@@ -1,4 +1,4 @@
-import { KeyManager } from 'mailspring-exports';
+import { KeyManager } from 'moros-exports';
 import MorosDataStore, { MorosRecord, morosId } from '../moros-data-store';
 import { analyzeHealth, HealthSummary } from './password-health';
 
