@@ -19,6 +19,12 @@ import NetWorthView from './finance/net-worth-view';
 import MorosWidgetWindow from './panels/widget-window';
 import { MOROS_WIDGET_WINDOW_TYPE } from './panels/widget-launcher';
 import MorosSettingsStore from './moros-settings-store';
+import TasksStore from './tasks/tasks-store';
+import FinanceStore from './finance/finance-store';
+import BudgetsStore from './finance/finance-budgets-store';
+import KeyNestStore from './keynest/keynest-store';
+import SubscriptionsStore from './subscriptions/subscriptions-store';
+import BriefingStore from './briefing/briefing-store';
 import { registerWidget } from './panels/widget-registry';
 
 // Panels that can be popped out into their own widget window. Only standalone
@@ -111,9 +117,20 @@ export function activate() {
 }
 
 export function deactivate() {
-  // Release the cross-window file watcher (and any pending save) in every
-  // window type so deactivation doesn't leak a live fs.watch handle.
-  MorosSettingsStore.dispose();
+  // Release every Moros store's cross-window file watcher (and pending save
+  // timer) in all window types so deactivation doesn't leak fs.watch handles —
+  // each store is instantiated in every window via its root component's import.
+  for (const store of [
+    MorosSettingsStore,
+    TasksStore,
+    FinanceStore,
+    BudgetsStore,
+    KeyNestStore,
+    SubscriptionsStore,
+    BriefingStore,
+  ]) {
+    store.dispose();
+  }
   if (AppEnv.getWindowType() === MOROS_WIDGET_WINDOW_TYPE) {
     ComponentRegistry.unregister(MorosWidgetWindow);
     return;
