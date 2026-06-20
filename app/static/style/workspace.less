@@ -30,6 +30,31 @@ moros-workspace {
   background-image: @glass-window-bg;
 }
 
+// Apple Liquid Glass: on macOS the main window uses native vibrancy (see
+// moros-window.ts). Drop the workspace fill to a translucent veil so the
+// desktop refracts up through the glass chrome. Scoped to the default window
+// so spec/popout windows keep their solid theme background intact (the
+// theme-manager-specs assertion on moros-workspace background-color is
+// unaffected).
+body.platform-darwin.window-type-default moros-workspace {
+  // Cupertino is a solid macOS-dark window, not vibrancy glass.
+  background-color: @background-primary;
+  background-image: linear-gradient(165deg, #1e1e1e 0%, #1c1c1e 100%);
+}
+
+// Keep the reading columns solid for legibility — the desktop vibrancy is
+// expressed through the translucent root sidebar and toolbar only, the way
+// native macOS apps (Mail, Notes) treat glass. Without this the transparent
+// .sheet lets the light vibrancy material wash out the message area.
+body.platform-darwin.window-type-default {
+  .column-ThreadList,
+  .column-MessageList,
+  .column-MessageListSidebar,
+  .column-DraftList {
+    background-color: @background-primary;
+  }
+}
+
 .sheet-container {
   height: 100%;
 }

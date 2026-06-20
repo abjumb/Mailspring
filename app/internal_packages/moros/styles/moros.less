@@ -77,6 +77,11 @@
     img {
       width: 20px;
       height: 20px;
+      // ContentIsMask icons are tinted by background-color; without this only
+      // the active item (which sets its own color below) was visible. Track
+      // currentColor so the icon matches its label in every state — subtle
+      // when idle, bright on hover, accent when active.
+      background-color: currentColor;
     }
   }
 

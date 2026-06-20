@@ -677,3 +677,73 @@ body.platform-win32 {
     }
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// Liquid Glass — Apple-style translucent material for the onboarding welcome.
+// A vibrant ambient backdrop with floating glass elements: specular rim
+// highlights, soft inner lensing, and a depth shadow so chrome reads as a
+// physical pane of glass rather than a flat fill.
+// ─────────────────────────────────────────────────────────────────────────
+.page.welcome {
+  // Rich, "liquid" ambient field that the glass elements refract. Layered
+  // radial glows over a deep indigo base give the colourful depth Apple's
+  // Liquid Glass is designed to sit on top of.
+  .steps-container {
+    background-color: #0b0c1a;
+    background-image: radial-gradient(
+        120% 120% at 0% 0%,
+        rgba(94, 106, 210, 0.6) 0%,
+        transparent 55%
+      ),
+      radial-gradient(120% 130% at 100% 0%, rgba(76, 154, 210, 0.5) 0%, transparent 52%),
+      radial-gradient(150% 150% at 50% 125%, rgba(150, 130, 255, 0.45) 0%, transparent 60%),
+      linear-gradient(165deg, #1b1c3e 0%, #0b0c1a 100%);
+  }
+
+  .hero-text {
+    text-shadow: 0 1px 24px rgba(11, 12, 26, 0.55);
+  }
+
+  // The button bar dissolves so the action floats directly on the ambient
+  // field as a single piece of glass.
+  .footer {
+    background: transparent;
+    background-color: transparent;
+    border-top: none;
+    box-shadow: none;
+
+    .btn-continue {
+      color: #ffffff;
+      font-weight: 400;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.24) 0%,
+        rgba(255, 255, 255, 0.08) 100%
+      );
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      // Specular top rim + faint inner lens glow + grounding drop shadow.
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -10px 22px rgba(255, 255, 255, 0.05), 0 12px 32px rgba(0, 0, 0, 0.38);
+      transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+
+      &:hover {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.34) 0%,
+          rgba(255, 255, 255, 0.14) 100%
+        );
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75),
+          inset 0 -10px 22px rgba(255, 255, 255, 0.08), 0 16px 40px rgba(0, 0, 0, 0.44);
+        transform: translateY(-1px);
+      }
+      &:active {
+        transform: translateY(0);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          0 6px 18px rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+}
